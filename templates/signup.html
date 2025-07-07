@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign-Up | Hanjul-Diary</title>
+  <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
+</head>
+<body class="bg-[rgba(var(--bg-orange))]">
+  <main class="">
+    <section class="mx-auto">
+      <div class="service-title pt-[120px] pb-[60px] text-[40px] font-[600] text-center">
+        일기, 한마디
+      </div>
+      <div class="main-div mx-[90px] max-[720px]:mx-[40px] shadow-div-parent p-8 rounded-[12px] flex flex-col gap-6">
+        <div class="pt-[20px] pb-[20px] text-[20px] font-[400] text-center">
+          회원가입을 진행해주세요.
+        </div>
+				<label class="signup-name-label flex flex-col text-left gap-1">
+          <span class="text-[16px] font-[400]">이름을 입력해주세요.</span>
+          <input type="text" placeholder="이름" class="signup-name-input bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" />
+        </label>
+        <label class="signup-id-label flex flex-col text-left gap-1">
+          <span class="text-[16px] font-[400]">아이디를 입력해주세요.</span>
+          <input type="text" placeholder="아이디" class="signup-id-input [rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" />
+        </label>
+        <label class="signup-pw-label flex flex-col text-left gap-1">
+          <span class="text-[16px] font-[400]">비밀번호를 입력해주세요.</span>
+          <input type="password" placeholder="비밀번호" class="signup-pw-input bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" />
+        </label>
+				<label class="signup-pw-check-label flex flex-col text-left gap-1">
+          <span class="text-[16px] font-[400]">비밀번호 확인을 진행해주세요.</span>
+          <input type="password" placeholder="비밀번호 확인" class="signup-pw-check-input bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" />
+        </label>
+        <button class="signup-button mt-10 py-2 mb-[20px] shadow-div-parent border rounded-[12px] hover:border-primary">회원가입</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
