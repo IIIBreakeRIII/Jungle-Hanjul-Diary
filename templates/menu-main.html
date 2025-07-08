@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Main-Meun | Hanjul-Diary</title>
+    <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
+	</head>
+
+  <body class="bg-[rgba(var(--bg-orange))]">
+    <main class="min-h-screen flex flex-col justify-center">
+      <section class="flex justify-center">
+        <div class="logo flex flex-row items-center">
+          <img src="{{ url_for('static', filename='logo.png') }}" class="w-[140px] max-[720px]:w-[100px] object-contain" />
+          <p class="text-[40px] max-[720px]:text-[28px] font-[500] text-center">일기, 한마디</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="main-menu mx-[90px] max-[720px]:mx-[40px] p-8 flex flex-col gap-10">
+          <a href="{{ url_for('temp_menu_writeDiary') }}" class="block">
+            <button class="write-diary-button py-[40px] max-[720px]:py-[28px] shadow-div-parent text-[24px] max-[720px]:text-[18px] font-[600] border rounded-[12px] hover:border-primary w-full">글쓰기</button>
+          </a>
+          <a href="menu-randomDiary.html" class="block">
+            <button class="random-diary-button py-[40px] max-[720px]:py-[28px] shadow-div-parent text-[24px] max-[720px]:text-[18px] font-[600] border rounded-[12px] hover:border-primary w-full">랜덤 일기 보기</button>
+          </a>
+          <a href="menu-myDiary.html" class="block">
+            <button class="my-diary-button py-[40px] max-[720px]:py-[28px] shadow-div-parent text-[24px] max-[720px]:text-[18px] font-[600] border rounded-[12px] hover:border-primary w-full">내가 쓴 글</button>
+          </a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

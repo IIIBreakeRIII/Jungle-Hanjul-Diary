@@ -26,6 +26,9 @@
           <input type="password" placeholder="비밀번호" class="login-pw-input bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" />
         </label>
         <button class="login-button mt-10 py-2 shadow-div-parent border rounded-[12px] hover:border-primary">로그인</button>
+        <a href="{{ url_for('temp_menu_main_render') }}">
+          <button class="login-button py-2 shadow-div-parent border rounded-[12px] hover:border-primary w-full">Temp Button for move to Main Page</button>
+        </a>
         <div class="pt-[20px] pb-[20px] text-center">
           <p class="text-[12px] font-[300] pb-[8px]">회원이 아니신가요?</p>
           <p class="text-[16px] font-[300]"><a href="{{ url_for('signup_form') }}" class="link-signup font-[500] text-[rgba(var(--primary))]">회원가입</a>을 눌러 회원가입을 진행해주세요.</p>         
