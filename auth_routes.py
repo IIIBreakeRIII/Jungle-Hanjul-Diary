@@ -82,7 +82,7 @@ def _handle_auth_fail():
       """
       <script>
         alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-        window.location.href = "/login-test";
+        window.location.href = "/";
       </script>
       """
     )
@@ -179,4 +179,19 @@ def register_auth_routes(app):
     # 쿠키에서 액세스 토큰 & 리프레시 토큰을 모두 제거
     unset_jwt_cookies(response)
     return response
+
+  ############################# 인증 테스트 코드 ############################
+
+  # jwt 인증 테스트 코드
+  @app.route('/api/test-auth', methods=['GET'])
+  @handle_token_validation
+  def test_auth():
+    current_user = get_jwt_identity()
+    return jsonify({"message": f"Hello, {current_user}!"}), 200
+
+  # jwt 테스트 - 인증이 필요한 페이지 접속 가능 여부
+  @app.route('/api/test-auth-token', methods=['GET'])
+  @handle_token_validation
+  def test_auth_token():
+      return render_template('auth-test.html')
 
