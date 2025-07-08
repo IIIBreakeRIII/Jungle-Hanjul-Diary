@@ -60,7 +60,7 @@ def register_auth_routes(app):
       return jsonify({"message": "회원가입 처리 중 오류가 발생했습니다."}), 500
 
 
-  @app.route('/login', methods=['POST'])
+  @app.route('/api/login', methods=['POST'])
   def login():
     data = request.get_json()
     user_id = data.get("userId")
@@ -70,14 +70,14 @@ def register_auth_routes(app):
     user = db.users.find_one({"user_id": user_id})
 
     # 입력한 정보에 해당하는 유저가 없다면, 사용자에게 안내 메시지 보내기
-    if not user or user["password"] != user_password:
+    if not user or user["user_pw"] != user_password:
       return jsonify({"message": "아이디 또는 비밀번호가 틀렸습니다."}), 401
 
     # 입력한 정보에 해당하는 유저가 있다면 JWT 토큰을 발급하기
     access_token = create_access_token(identity=user_id)
 
     # 리다이렉션 URL 설정
-    redirect_url = url_for('signup')
+    redirect_url = url_for('signup_form')
 
     # 응답 객체 생성
     response = jsonify({
