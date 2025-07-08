@@ -166,7 +166,7 @@ def register_diary_routes(app):
         
     # 내가 작성한 일기 삭제
     #@app.route('/diary/<diary_id>', methods=['DELETE'])
-    @app.route('/diary/<diary_id/delete>', methods=['POST']) # 기존 DELETE를 사용했으나 교체
+    @app.route('/diary/<diary_id>/delete', methods=['POST']) # 기존 DELETE를 사용했으나 교체
     def delete_diary(diary_id):
         result = db.diaries.delete_one({'_id': ObjectId(diary_id)})
         # return jsonify({"message": "일기 삭제 완료"})
@@ -197,17 +197,8 @@ def register_diary_routes(app):
 #         result = db.diaries.delete_one({'_id': ObjectId(diary_id)})
 #         return jsonify({"message": "일기 삭제 완료"})
     
-#     # 일기 좋아요
-#     @app.route('/memo/like', methods=['POST'])
-#     def like_memo():
-#         id_receive = request.form['id_give']
-#         memo = db.memos.find_one({'_id': ObjectId(id_receive)})
-#         new_likes = memo['likes'] + 1
-#         result = db.memos.update_one({'_id': ObjectId(id_receive)}, {'$set': {'likes': new_likes}})
-#         if result.modified_count == 1:
-#             return jsonify({'result': 'success'})
-#         else:
-#             return jsonify({'result': 'failure'})
-        
-#     #일기 좋아요 취소
-#     @app.route('/memo/unlike', methods=['POST'])
+# 일기 좋아요
+
+
+#일기 좋아요 취소
+
