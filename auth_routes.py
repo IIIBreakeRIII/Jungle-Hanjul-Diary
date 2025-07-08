@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 from db import db
 
 # 사용자 인증 관련 코드 작성 (예시)
@@ -12,6 +12,10 @@ def register_auth_routes(app):
     # MongoDB에 유저 정보 추가
     db.users.insert_one({"email": email, "password": password})
     return jsonify({"message": "회원가입 성공"})
+  
+  @app.route('/signup', methods=['GET'])
+  def signup_form():
+    return render_template('signup.html')
 
   @app.route('/login', methods=['POST'])
   def login():

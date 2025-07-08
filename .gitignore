@@ -17,3 +17,6 @@ venv/
 
 # ENV
 .env
+
+# Node Modules
+node_modules/

@@ -2,9 +2,36 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>메인 페이지</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hanjul-Diary</title>
+  <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
 </head>
-<body>
-  <h1>메인 페이지 예시입니다.</h1>
+<body class="bg-[rgba(var(--bg-orange))]">
+  <main class="login">
+    <section class="mx-auto">
+      <div class="service-title pt-[120px] pb-[60px] text-[40px] font-[600] text-center">
+        일기, 한마디
+      </div>
+      <div class="main-div mx-[90px] max-[720px]:mx-[40px] shadow-div-parent p-8 rounded-[12px] flex flex-col gap-6">
+        <img src="{{ url_for('static', filename='logo.png') }}" class="image-logo w-[140px] object-contain mx-auto" />
+        <div class="pt-[20px] pb-[20px] text-[20px] font-[400] text-center">
+          서비스를 사용하기 위해서 로그인을 해주세요.
+        </div>
+        <label class="login-id-label flex flex-col text-left gap-1">
+          <span class="text-[16px] font-[400]">아이디를 입력하세요</span>
+          <input type="text" placeholder="아이디" class="login-id-input bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" />
+        </label>
+        <label class="login-pw-label flex flex-col text-left gap-1">
+          <span class="text-[16px] font-[400]">비밀번호를 입력하세요</span>
+          <input type="password" placeholder="비밀번호" class="login-pw-input bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" />
+        </label>
+        <button class="login-button mt-10 py-2 shadow-div-parent border rounded-[12px] hover:border-primary">로그인</button>
+        <div class="pt-[20px] pb-[20px] text-center">
+          <p class="text-[12px] font-[300] pb-[8px]">회원이 아니신가요?</p>
+          <p class="text-[16px] font-[300]"><a href="{{ url_for('signup_form') }}" class="link-signup font-[500] text-[rgba(var(--primary))]">회원가입</a>을 눌러 회원가입을 진행해주세요.</p>         
+        </div>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
