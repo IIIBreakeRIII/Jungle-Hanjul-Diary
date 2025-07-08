@@ -36,5 +36,90 @@
       </div>
     </section>
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const signupBtn = document.querySelector('.signup-button');
+      signupBtn.addEventListener('click', signup);
+    })
+
+    async function signup() {
+      try {
+        const userName = document.querySelector('.signup-name-input').value
+        const userId = document.querySelector('.signup-id-input').value
+        const userPw = document.querySelector('.signup-pw-input').value
+        const userPwCheck = document.querySelector('.signup-pw-check-input').value
+
+        const validationResult = validateInputs({ userName, userId, userPw, userPwCheck });
+
+        if (!validationResult) {
+          return;
+        }
+
+        // 회원가입 API 호출
+        const response = await fetch('/api/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userName,
+            userId,
+            userPw,
+          })
+        });
+
+        const data = await response.json();
+
+        switch (response.status) {
+          case 201: // 성공
+            alert(data.message);
+            window.location.href = data.redirect;
+            break;
+          case 409: // 중복 아이디
+            alert(data.message);
+            break;
+          case 500: // 서버 오류
+            alert(data.message);
+            break;
+          default:
+            alert("예기치 않은 오류가 발생했습니다.");
+        }
+      } catch (error) {
+        console.log('회원가입 중 오류 발생:', error);
+        alert("회원가입 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+      }
+    }
+
+    // 각 입력 요소에 대한 유효성 검사
+    // TODO: 간단하게 빈값인지 유무만 검사 -> 추후에 검사 항목 추가?
+    function validateInputs({ userName, userId, userPw, userPwCheck }) {
+      if (userName.length === 0 || userName === '') {
+        alert("이름을 입력해주세요.");
+        document.querySelector('.signup-name-input').focus();
+        return false;
+      }
+
+      if (userId.length === 0 || userId === '') {
+        alert("아이디를 입력해주세요.");
+        document.querySelector('.signup-id-input').focus();
+        return false;
+      }
+
+      if (userPw.length === 0 || userPw === '') {
+        alert("비밀번호를 입력해주세요.");
+        document.querySelector('.signup-pw-input').focus();
+        return false;
+      }
+
+      if (userPw !== userPwCheck) {
+        alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+        document.querySelector('.signup-pw-input').focus();
+        return false;
+      }
+
+      return true;
+    }
+  </script>
 </body>
 </html>

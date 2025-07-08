@@ -11,22 +11,54 @@ from flask_jwt_extended import (
   verify_jwt_in_request
 )
 
+from datetime import datetime, UTC
 
-# 사용자 인증 관련 코드 작성 (예시)
+# 사용자 인증 관련 코드 작성
 def register_auth_routes(app):
-  @app.route('/signup', methods=['POST'])
-  def signup():
-    data = request.json
-    email = data.get("email")
-    password = data.get("password")
-
-    # MongoDB에 유저 정보 추가
-    db.users.insert_one({"email": email, "password": password})
-    return jsonify({"message": "회원가입 성공"})
-  
   @app.route('/signup', methods=['GET'])
   def signup_form():
     return render_template('signup.html')
+
+  @app.route('/api/signup', methods=['POST'])
+  def signup():
+    try:
+      data = request.json
+      user_name = data.get("userName")
+      user_id = data.get("userId")
+      user_pw = data.get("userPw")
+
+      # 기존 사용자 확인 (아이디 중복 체크)
+      existing_user = db.users.find_one({"user_id": user_id})
+      if existing_user:
+        return jsonify({"message": "이미 존재하는 아이디입니다."}), 409
+
+      # MongoDB에 유저 정보 추가
+      result = db.users.insert_one({
+        "user_name": user_name,
+        "user_id": user_id,
+        "user_pw": user_pw,
+        "created_at": datetime.now(UTC)
+      })
+
+      if not result.inserted_id:
+        return jsonify({"message": "데이터베이스 저장에 실패했습니다."}), 500
+
+      # 리다이렉션 URL 설정
+      redirect_url = url_for('home')
+
+      # 응답 객체 생성
+      response = jsonify({
+        "message": "회원가입에 성공하였습니다.",
+        "redirect": redirect_url,
+        "userId": user_id
+      })
+
+      return response, 201
+
+    except Exception as e:
+      print(f"회원가입 처리 중 오류 발생: {str(e)}")
+      return jsonify({"message": "회원가입 처리 중 오류가 발생했습니다."}), 500
+
 
   @app.route('/login', methods=['POST'])
   def login():
