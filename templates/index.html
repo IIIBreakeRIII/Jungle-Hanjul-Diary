@@ -33,5 +33,51 @@
       </div>
     </section>
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 로그인 버튼 이벤트 핸들러
+      const loginBtn = document.querySelector('.login-button');
+      loginBtn.addEventListener('click', login);
+    })
+
+    // 로그인 요청
+    async function login() {
+      try {
+        const userId = document.querySelector('.login-id-input').value;
+        const userPw = document.querySelector('.login-pw-input').value;
+
+        // api 호출
+        const res = await fetch('/login', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ userId, userPw }),
+          redirect: 'manual'
+        });
+
+        // 응답이 JSON 형식인지 확인
+        const contentType = res.headers.get('content-type');
+
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+
+          if (res.status === 401) {
+              alert(data.message);
+              return;
+          }
+
+          if (res.ok) {
+              window.location.href = data.redirect;
+          }
+        }
+      } catch (error) {
+        console.log('로그인 중 오류 발생:', error);
+        alert("로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+      }
+    }
+  </script>
 </body>
 </html>
