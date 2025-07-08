@@ -154,7 +154,7 @@ def register_auth_routes(app):
     refresh_token = create_refresh_token(identity=user_id)
 
     # 리다이렉션 URL 설정
-    redirect_url = url_for('signup_form')
+    redirect_url = url_for('show_main_page')
 
     # 응답 객체 생성
     response = jsonify({
