@@ -44,7 +44,7 @@ def handle_token_validation(view_func):
       except Exception as e:
         print("JWT Exception after ExpiredSignatureError:", type(e), str(e))
         # 리프레시 토큰도 만료된 경우 -> 다시 로그인 요청하기
-        return _handle_auth_fail()
+        return _handle_session_expired()
 
     except NoAuthorizationError:
       # 액세스 토큰이 아예 없는 경우에도 리프레시로 재발급 시도
@@ -61,17 +61,17 @@ def handle_token_validation(view_func):
       except Exception as e:
         print("JWT Exception after NoAuthorizationError:", type(e), str(e))
         # 리프레시 토큰도 없다면 NoAuthorizationError 발생: Missing cookie "refresh_token_cookie"
-        return _handle_auth_fail()
+        return _handle_not_logged_in()
 
     # 그 밖의 에러 메시지
     except Exception as e:
       print("JWT Exception:", type(e), str(e))
-      return _handle_auth_fail()
+      return _handle_not_logged_in()
 
   return wrapped
 
 # 토큰 예외 관련 메시지 처리 함수
-def _handle_auth_fail():
+def _handle_session_expired():
   preferred = request.accept_mimetypes.best_match(["application/json", "text/html"])
   if request.is_json or preferred == "application/json":
     return jsonify({
@@ -82,6 +82,22 @@ def _handle_auth_fail():
       """
       <script>
         alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+        window.location.href = "/";
+      </script>
+      """
+    )
+
+def _handle_not_logged_in():
+  preferred = request.accept_mimetypes.best_match(["application/json", "text/html"])
+  if request.is_json or preferred == "application/json":
+    return jsonify({
+      "msg": "로그인이 필요한 서비스입니다.",
+      "code": "NOT_LOGGED_IN"}), 401
+  else:
+    return render_template_string(
+      """
+      <script>
+        alert("로그인이 필요한 서비스입니다.");
         window.location.href = "/";
       </script>
       """
