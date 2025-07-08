@@ -25,7 +25,10 @@ app.config['JWT_COOKIE_SECURE'] = False
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 
 # JWT 액세스 토큰의 유효시간 설정 : 테스트를 위해 짧게 설정
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(seconds=300)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=2)
+
+# JWT 리프레시 토큰 유효시간 설정
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(minutes=2)
 
 # 확장 모듈 초기화
 jwt = JWTManager(app)
