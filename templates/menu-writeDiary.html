@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wirte-Diary | Hanjul-Diary</title>
+    <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
+	</head>
+
+  <body class="bg-[rgba(var(--bg-orange))]">
+    <main class="min-h-screen flex flex-col justify-center">
+			<section class="flex justify-center">
+        <div class="logo flex flex-row items-center">
+          <img src="{{ url_for('static', filename='logo.png') }}" class="w-[140px] max-[720px]:w-[100px] object-contain" />
+          <p class="text-[40px] max-[720px]:text-[28px] font-[500] text-center">일기, 한마디</p>
+        </div>
+      </section> 
+
+      <section>
+        <div class="menu-writeDiary-main-div mx-[90px] max-[720px]:mx-[40px] shadow-div-parent p-8 rounded-[12px] flex flex-col gap-6">
+          <div class="pt-[20px] pb-[20px] text-[20px] font-[500] text-center">
+            <span>오늘의 일기를 한 줄로 작성해주세요.</span>
+            <br>
+            <span class="text-[14px] text-[rgba(var(--gray))] font-[100]">오늘 있었던 일, 오늘의 감정 등 다양하게 작성하셔도 됩니다.</span>
+            <br>
+            <span class="text-[14px] text-[rgba(var(--gray))] font-[100]">(50자 제한)</span>
+          </div>
+          <textarea placeholder="일기를 50자 이내로 작성하세요." class="diary-textarea bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" rows="3" maxlength="50"></textarea>
+          <button class="diary-create-button mt-[8px] py-2 shadow-div-parent border rounded-[12px] hover:border-primary">게시하기</button>
+          <div class="flex items-center gap-3 mt-2">
+            <label class="flex items-center cursor-pointer select-none">
+              <input type="checkbox" name="private" value="private" class="peer sr-only">
+              <span class="w-[20px] h-[20px] rounded-full shadow-div-parent border-1 border-[rgba(var(--primary))] flex items-center justify-center mr-[8px]
+                peer-checked:after:w-[16px] peer-checked:after:h-[16px] peer-checked:after:rounded-full peer-checked:after:bg-[rgba(var(--primary))]"></span>
+              <span class="text-[12px] font-[100] text-[rgba(var(--gray))]">이 일기는 저만 보고 싶어요.</span>
+            </label>
+          </div> 
+        </div>
+      </section>
+    </main>
+  </body>
+</html

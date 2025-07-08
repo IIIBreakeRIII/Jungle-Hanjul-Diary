@@ -195,3 +195,6 @@ def register_auth_routes(app):
   def test_auth_token():
       return render_template('auth-test.html')
 
+  @app.route('/menu-writeDiary', methods=['GET'])
+  def temp_menu_writeDiary():
+    return render_template('menu-writeDiary.html')
