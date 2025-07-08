@@ -1,6 +1,6 @@
 from flask import (
   request, jsonify, render_template, url_for,
-  render_template_string, make_response )
+  render_template_string, make_response, redirect )
 from db import db
 
 from flask_jwt_extended import (
@@ -170,3 +170,13 @@ def register_auth_routes(app):
     response.headers['Access-Control-Allow-Credentials'] = 'true'
 
     return response, 200
+
+
+  @app.route('/api/logout', methods=['POST'])
+  def logout():
+    response = redirect(url_for('home'))
+
+    # 쿠키에서 액세스 토큰 & 리프레시 토큰을 모두 제거
+    unset_jwt_cookies(response)
+    return response
+
