@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My-Diary | Hanjul-Diary</title>
+    <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
+	</head>
+
+  <body class="bg-[rgba(var(--bg-orange))]">
+    <main class="min-h-screen flex flex-col justify-center">
+			<section class="flex justify-center">
+        <div class="logo flex flex-row items-center">
+          <img src="{{ url_for('static', filename='logo.png') }}" class="w-[140px] max-[720px]:w-[100px] object-contain" />
+          <p class="text-[40px] max-[720px]:text-[28px] font-[500] text-center">일기, 한마디</p>
+        </div>
+      </section> 
+
+      <section>
+        <div class="menu-myDiary-main-div mx-[90px] max-[720px]:mx-[40px] shadow-div-parent p-8 rounded-[12px] flex flex-col">
+          <div class="pt-[20px] pb-[20px] text-[20px] font-[500] text-center">
+            <span>내가 쓴 일기</span>
+          </div>
+          <div class="diary-search-div mt-[20px] flex items-center">
+            <input type="text" placeholder="검색할 일기" maxlength="30" class="diary-search-input flex-1 bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]"/>
+            <button class="diary-search-button text-[rgba(var(--black))] ml-[12px] px-[20px] max-[540px]:px-[12px] py-2 shadow-div-parent border rounded-[8px] hover:border-primary">
+              검색
+            </button>
+          </div>
+          <div class="my-diary-list flex flex-col items-center w-full max-w-[500px] mx-auto">
+            <a href="{{ url_for('temp_myDiary_edit') }}" class="w-full">
+              <button class="my-diary-button w-full text-[16px] font-[100] text-[rgba(var(--black))] mt-[20px] py-[12px] px-[12px] shadow-div-parent border rounded-[8px] hover:border-primary truncate overflow-hidden whitespace-nowrap">
+                This is example diary for test. It is made by hard coding. (Sample Sample Sample)
+              </button>
+            </a>
+            <a href="{{ url_for('temp_myDiary_edit') }}" class="w-full">
+              <button class="my-diary-button w-full text-[16px] font-[100] text-[rgba(var(--black))] mt-[20px] py-[12px] px-[12px] shadow-div-parent border rounded-[8px] hover:border-primary truncate overflow-hidden whitespace-nowrap">
+                This is example diary for test. It is made by hard coding. (Sample Sample Sample)
+              </button>
+            </a>
+            <a href="{{ url_for('temp_myDiary_edit') }}" class="w-full">
+              <button class="my-diary-button w-full text-[16px] font-[100] text-[rgba(var(--black))] mt-[20px] py-[12px] px-[12px] shadow-div-parent border rounded-[8px] hover:border-primary truncate overflow-hidden whitespace-nowrap">
+                This is example diary for test. It is made by hard coding. (Sample Sample Sample)
+              </button>
+            </a>
+            <a href="{{ url_for('temp_myDiary_edit') }}" class="w-full">
+              <button class="my-diary-button w-full text-[16px] font-[100] text-[rgba(var(--black))] mt-[20px] py-[12px] px-[12px] shadow-div-parent border rounded-[8px] hover:border-primary truncate overflow-hidden whitespace-nowrap">
+                This is example diary for test. It is made by hard coding. (Sample Sample Sample)
+              </button>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html

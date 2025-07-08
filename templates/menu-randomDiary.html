@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Random-Diary | Hanjul-Diary</title>
+    <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
+	</head>
+
+  <body class="bg-[rgba(var(--bg-orange))]">
+    <main class="min-h-screen flex flex-col justify-center">
+			<section class="flex justify-center">
+        <div class="logo flex flex-row items-center">
+          <img src="{{ url_for('static', filename='logo.png') }}" class="w-[140px] max-[720px]:w-[100px] object-contain" />
+          <p class="text-[40px] max-[720px]:text-[28px] font-[500] text-center">일기, 한마디</p>
+        </div>
+      </section> 
+
+      <section>
+        <div class="menu-randomDiary-main-div mx-[90px] max-[720px]:mx-[40px] shadow-div-parent p-8 rounded-[12px] flex flex-col">
+          <div class="pt-[20px] pb-[20px] text-[20px] font-[500] text-center">
+            <span>다른 사람의 일기</span>
+            <br>
+            <span class="text-[14px] text-[rgba(var(--gray))] font-[100]">댓글로 다른 사람의 일기를 공감하고 응원해주세요!</span>
+          </div>
+          <div class="random-diary-div bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[8px] px-[20px] py-[60px] my-[20px]">
+            <p class="random-diary-text text-center">This is example diary for test. It is made by hard coding. (Sample Sample Sample)</p>
+          </div>
+          <p class="text-[16px] font-[300] mt-[20px] mb-[12px]">댓글</p>
+          <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))]">
+            <p class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">댓글입니다.</p>
+          </div>
+          <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))]">
+            <p class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">댓글입니다.</p>
+          </div>
+          <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))]">
+            <p class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">댓글입니다.</p>
+          </div>
+          <div class="diary-add-reply mt-[40px] flex items-center">
+            <input type="text" placeholder="댓글 달기" maxlength="30" class="diary-add-reply-input flex-1 bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]"/>
+            <button class="diary-add-reply-button text-[rgba(var(--black))] ml-[12px] px-[20px] py-2 shadow-div-parent border rounded-[8px] hover:border-primary">
+              게시하기
+            </button>
+          </div>
+          <button class="diary-reply-random-button mt-[40px] py-2 shadow-div-parent border rounded-[12px] hover:border-primary">다음 일기 보기</button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

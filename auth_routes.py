@@ -195,6 +195,23 @@ def register_auth_routes(app):
   def test_auth_token():
       return render_template('auth-test.html')
 
+
+  """
+  FE 테스트 코드입니다!
+  백엔드 개발을 진행할 때는 해당 루트를 삭제하고 진행해주세요!
+  """
   @app.route('/menu-writeDiary', methods=['GET'])
   def temp_menu_writeDiary():
     return render_template('menu-writeDiary.html')
+
+  @app.route('/menu-myDiary', methods=['GET'])
+  def temp_menu_myDiary():
+    return render_template('menu-myDiary.html')
+
+  @app.route('/menu-randomDiary', methods=['GET'])
+  def temp_menu_randomDiary():
+    return render_template('menu-randomDiary.html')
+  
+  @app.route('/myDiary-edit', methods=['GET'])
+  def temp_myDiary_edit():
+    return render_template('myDiary-edit.html')
