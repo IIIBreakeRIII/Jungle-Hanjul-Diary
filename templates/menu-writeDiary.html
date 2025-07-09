@@ -10,7 +10,7 @@
   <body class="bg-[rgba(var(--bg-orange))]">
     <main class="min-h-screen flex flex-col justify-center">
 			<section class="flex justify-center">
-        <div class="logo flex flex-row items-center">
+        <div class="logo flex flex-row mb-[20px] items-center">
           <img src="{{ url_for('static', filename='logo.png') }}" class="w-[140px] max-[720px]:w-[100px] object-contain" />
           <p class="text-[40px] max-[720px]:text-[28px] font-[500] text-center">일기, 한마디</p>
         </div>
@@ -35,6 +35,12 @@
               <span class="text-[12px] font-[100] text-[rgba(var(--gray))]">이 일기는 저만 보고 싶어요.</span>
             </label>
           </div> 
+        </div>
+        <!-- 위의 입력 폼 div와 동일한 margin 적용 -->
+        <div class="mx-[90px] max-[720px]:mx-[40px]">
+          <button onclick="window.history.back();" class="mt-[20px] py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] max-[720px]:text-[16px] font-[200] border rounded-[12px] hover:border-primary w-full">
+            메뉴화면으로 돌아가기
+          </button>
         </div>
       </section>
     </main>

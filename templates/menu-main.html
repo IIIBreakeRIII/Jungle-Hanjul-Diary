@@ -10,7 +10,7 @@
   <body class="bg-[rgba(var(--bg-orange))]">
     <main class="min-h-screen flex flex-col justify-center">
       <section class="flex justify-center">
-        <div class="logo flex flex-row items-center">
+        <div class="logo flex flex-row items-center pb-[20px]">
           <img src="{{ url_for('static', filename='logo.png') }}" class="w-[140px] max-[720px]:w-[100px] object-contain" />
           <p class="text-[40px] max-[720px]:text-[28px] font-[500] text-center">일기, 한마디</p>
         </div>
@@ -26,6 +26,9 @@
           </a>
           <a href="{{ url_for('show_my_diaries_page') }}" class="block">
             <button class="my-diary-button py-[40px] max-[720px]:py-[28px] shadow-div-parent text-[24px] max-[720px]:text-[18px] font-[600] border rounded-[12px] hover:border-primary w-full">내가 쓴 글</button>
+          </a>
+          <a href="{{ url_for('show_my_diaries_page') }}" class="block">
+            <button class="user-info-button py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] max-[720px]:text-[16px] font-[200] border rounded-[12px] hover:border-primary w-full">회원정보</button>
           </a>
         </div>
       </section>

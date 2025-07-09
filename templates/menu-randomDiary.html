@@ -39,12 +39,12 @@
             {% for comment in comments %}
               {% if comment.is_mine %}
                 <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))] flex items-center justify-between" data-comment-id="{{ comment._id }}">
-                  <div class="diary-reply-div flex items-center">
-                    <span class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">{{ comment.comment }}</span>
-                    <input class="diary-reply-edit-input flex-1 bg-[rgba(var(--bg-orange))] hidden shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]" maxlength="30" value=""/>
-                    <p class="reply-reveal-my-text ml-[8px] text-[10px] font-[100] text-[rgba(var(--gray))]">(내가 쓴 댓글)</p>
+                  <div class="flex items-center w-10/12">
+                    <span class="diary-reply-text w-full break-words pr-2 text-[16px] font-[100] text-[rgba(var(--gray))]">{{ comment.comment }}</span>
+                    <input class="diary-reply-edit-input w-full bg-[rgba(var(--bg-orange))] hidden shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]" maxlength="30" value=""/>
+                    <p class="reply-reveal-my-text w-3/12 ml-[8px] text-[10px] font-[100] text-[rgba(var(--gray))]">(내가 쓴 댓글)</p>
                   </div>
-                  <div class="diary-reply-edit-div flex items-center">
+                  <div class="diary-reply-edit-div flex items-center w-4/12 justify-end">
                     <button class="diary-reply-edit-button ml-2 px-3 py-1 text-[10px] border rounded-[6px] shadow-div-parent hover:border-primary">수정</button>
                     <button class="diary-reply-save-button ml-2 px-3 py-1 text-[10px] border rounded-[6px] shadow-div-parent hover:border-primary hidden">저장</button>
                     <button class="diary-reply-delete-button ml-[12px] px-3 py-1 text-[10px] text-[rgba(var(--red))] border rounded-[6px] shadow-div-parent hover:border-warn">삭제</button>
@@ -67,13 +67,18 @@
 
           <div class="diary-add-reply mt-[40px] flex items-center">
             <input type="text" placeholder="댓글 달기" maxlength="30" class="diary-add-reply-input flex-1 bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]"/>
-            <button class="diary-add-reply-button text-[rgba(var(--black))] ml-[12px] px-[20px] py-2 shadow-div-parent border rounded-[8px] hover:border-primary">
-              게시하기
+            <button class="diary-add-reply-button max-[540px]:text-[12px] text-[rgba(var(--black))] ml-[12px] px-[20px] py-2 max-[540px]:py-3 shadow-div-parent border rounded-[8px] hover:border-primary">
+              입력
             </button>
           </div>
           <button class="diary-reply-random-button mt-[40px] py-2 shadow-div-parent border rounded-[12px] hover:border-primary">다음 일기 보기</button>
         </div>
       </section>
+      <div class="mx-[90px] max-[720px]:mx-[40px]">
+        <button onclick="window.history.back();" class="mt-[20px] py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[200] border rounded-[12px] hover:border-primary w-full">
+          메뉴화면으로 돌아가기
+        </button>
+      </div>
     </main>
 
     <script>
