@@ -37,7 +37,39 @@
                 peer-checked:after:w-[16px] peer-checked:after:h-[16px] peer-checked:after:rounded-full peer-checked:after:bg-[rgba(var(--primary))]"></span>
               <span class="text-[12px] font-[100] text-[rgba(var(--gray))]">이 일기는 저만 보고 싶어요.</span>
             </label>
-          </div> 
+          </div>
+
+          {# 댓글 목록 #}
+          <p class="text-[16px] font-[300] mt-[20px] mb-[12px]">댓글</p>
+            {% if comments %}
+              {% for comment in comments %}
+                {% if comment.is_mine %}
+                  <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))] flex items-center justify-between" data-comment-id="{{ comment._id }}">
+                    <div class="diary-reply-div flex items-center">
+                      <span class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">{{ comment.comment }}</span>
+                      <input class="diary-reply-edit-input flex-1 bg-[rgba(var(--bg-orange))] hidden shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]" maxlength="30" value=""/>
+                      <p class="reply-reveal-my-text ml-[8px] text-[10px] font-[100] text-[rgba(var(--gray))]">(내가 쓴 댓글)</p>
+                    </div>
+                    <div class="diary-reply-edit-div flex items-center">
+                      <button class="diary-reply-edit-button ml-2 px-3 py-1 text-[10px] border rounded-[6px] shadow-div-parent hover:border-primary">수정</button>
+                      <button class="diary-reply-save-button ml-2 px-3 py-1 text-[10px] border rounded-[6px] shadow-div-parent hover:border-primary hidden">저장</button>
+                      <button class="diary-reply-delete-button ml-[12px] px-3 py-1 text-[10px] text-[rgba(var(--red))] border rounded-[6px] shadow-div-parent hover:border-warn">삭제</button>
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))]" data-comment-id="{{ comment._id }}">
+                    <p class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">
+                      {{ comment.comment }}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              <div class="py-[12px] border-b border-b-[rgba(var(--primary))]">
+                <p class="text-[16px] font-[100] text-[rgba(var(--gray))] text-center">
+                  아직 작성된 댓글이 없습니다.
+                </p>
+              </div>
+            {% endif %}
         </div>
       </section>
     </main>

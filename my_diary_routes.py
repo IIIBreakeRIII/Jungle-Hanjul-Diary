@@ -45,11 +45,27 @@ def register_my_diary_routes(app):
 
   # 내가 작성한 일기 상세 조회
   @app.route('/diary/me/<diary_id>', methods=['GET'])
+  @handle_token_validation
   def edit_diary(diary_id):
+    user_id = get_jwt_identity()
     diary = db.diaries.find_one({'_id': ObjectId(diary_id)})
     diary['_id'] = str(diary['_id'])
 
-    return render_template('myDiary-edit.html', diary=diary)
+    # 일기에 달린 댓글도 조회
+    comments = list(db.comments.find({'diary_id': diary['_id']}))
+
+    # comments 안의 각 comment 마다 user_id 와 작성자 id 가 동일한지 체크하기
+    if not comments:
+      return render_template('myDiary-edit.html', diary=diary, comments=[])
+
+    for comment in comments:
+      comment['_id'] = str(comment['_id'])
+      if comment['user_id'] == user_id:
+        comment['is_mine'] = True
+      else:
+        comment['is_mine'] = False
+
+    return render_template('myDiary-edit.html', diary=diary, comments=comments)
 
   # 내 일기 수정 API
   @app.route('/api/diary/<diary_id>/update', methods=['PUT'])
