@@ -28,7 +28,7 @@ app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=2)
 
 # JWT 리프레시 토큰 유효시간 설정
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(minutes=2)
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=14)
 
 # 확장 모듈 초기화
 jwt = JWTManager(app)
