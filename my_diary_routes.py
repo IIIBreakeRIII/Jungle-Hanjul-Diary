@@ -1,0 +1,85 @@
+from flask import request, jsonify, render_template, redirect, url_for
+from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
+from db import db
+from bson import ObjectId
+from datetime import datetime, UTC
+
+from auth_routes import handle_token_validation
+
+def register_my_diary_routes(app):
+
+  # 내가 작성한 일기 리스트 조회
+  @app.route('/diaries/me', methods=['GET'])
+  @handle_token_validation
+  def show_my_diaries_page():
+    # 현재 로그인한 사용자 정보를 쿠키의 토큰에서 가져오기
+    user_id = get_jwt_identity()
+
+    # 로그인한 유저가 작성한 일기만 조회
+    my_diaries = list(db.diaries.find({"user_id": user_id}))
+
+    for diary in my_diaries:
+      diary['_id'] = str(diary['_id'])
+
+    return render_template('menu-myDiary.html', my_diaries=my_diaries)
+
+  # 내가 작성한 일기 검색
+  @app.route('/api/diary/search', methods=['GET'])
+  @handle_token_validation
+  def search_diary():
+    user_id = get_jwt_identity()
+    keyword = request.args.get('keyword', '')
+
+    if not keyword:
+      return redirect(url_for('show_my_diaries_page'))
+
+    diaries = list(db.diaries.find({
+      "user_id": user_id,
+      "content": {"$regex": keyword, "$options": "i"}
+    }))
+
+    for diary in diaries:
+      diary['_id'] = str(diary['_id'])
+
+    return render_template('menu-myDiary.html', my_diaries=diaries)
+
+  # 내가 작성한 일기 상세 조회
+  @app.route('/diary/me/<diary_id>', methods=['GET'])
+  def edit_diary(diary_id):
+    diary = db.diaries.find_one({'_id': ObjectId(diary_id)})
+    diary['_id'] = str(diary['_id'])
+
+    return render_template('myDiary-edit.html', diary=diary)
+
+  # 내 일기 수정 API
+  @app.route('/api/diary/<diary_id>/update', methods=['PUT'])
+  @handle_token_validation
+  def update_diary(diary_id):
+    data = request.json
+    content_to_update = data.get('content')
+    is_private = data.get('is_private')
+
+    try:
+      result = db.diaries.update_one(
+        {'_id': ObjectId(diary_id)},
+        {'$set': {
+          'content': content_to_update,
+          'is_private': is_private
+        }}
+      )
+
+      if result.modified_count == 1:
+        return jsonify({"message": "일기가 수정되었습니다."})
+      else:
+        return jsonify({"message": "일기 수정에 실패했습니다."})
+
+    except Exception as e:
+      return jsonify({"message": "오류가 발생했습니다."}), 500
+
+  # 내가 작성한 일기 삭제 API
+  @app.route('/api/diary/<diary_id>/delete', methods=['DELETE'])  # 기존 DELETE를 사용했으나 교체
+  @handle_token_validation
+  def delete_diary(diary_id):
+    result = db.diaries.delete_one({'_id': ObjectId(diary_id)})
+
+    return jsonify({"message": "일기가 삭제되었습니다."})
