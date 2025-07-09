@@ -41,5 +41,37 @@
         </div>
       </section>
     </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const editDiaryButton = document.querySelector('.diary-edit-button');
+
+        editDiaryButton.addEventListener('click', async () => {
+          const content = document.querySelector('.diary-edit-textarea').value;
+          const isPrivate = document.querySelector('.edit-check-private-checkbox').checked;
+          const diary_id = '{{ diary._id }}';
+
+          const response = await fetch(`/api/diary/${diary_id}/update`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              content,
+              isPrivate
+            })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message);
+            window.location.href = `/diaries/me`;
+          } else {
+            alert(data.message);
+          }
+        })
+      })
+    </script>
   </body>
 </html

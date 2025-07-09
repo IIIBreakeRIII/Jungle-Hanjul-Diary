@@ -161,35 +161,45 @@ def register_diary_routes(app):
 
         return render_template('menu-myDiary.html', my_diaries=diaries)
 
-    ############################################################
 
-    # 내가 쓴 글 페이지(내가 작성한 일기 상세 조회)
+    # 내가 쓴 글 페이지 (내가 작성한 일기 상세 조회)
     @app.route('/diary/<diary_id>', methods=['GET'])
     def edit_diary(diary_id):
         diary = db.diaries.find_one({'_id': ObjectId(diary_id)})
         diary['_id'] = str(diary['_id'])
 
-        print(diary)
         return render_template('myDiary-edit.html', diary=diary)
-    
-    # 내가 작성한 일기 수정(내가 작성한 것만 나온다.)
-    #@app.route('/diary/<diary_id>', methods=['PUT'])
-    @app.route('/diary/<diary_id>/update', methods=['POST']) # 기존 PUT을 POST로 교체 
-    #@jwt_required()
+
+    # 내 일기 수정 API
+    @app.route('/api/diary/<diary_id>/update', methods=['PUT'])
+    @handle_token_validation
     def update_diary(diary_id):
-        #user_id = get_jwt_identity()
+        user_id = get_jwt_identity()
         data = request.json
-        content_receive = data.get('content')
-        result = db.diaries.update_one(
-            {'_id': ObjectId(diary_id)},
-            {'$set': {'content': content_receive}}
-        )
-        # if result.modified_count == 1:
-        #     return jsonify({"message": "수정 완료"})
-        # else:
-        #     return jsonify({"message": "수정 실패"})
-        return render_template('myDiary-edit.html', message="일기 수정 완료")
-        
+        content_to_update = data.get('content')
+        is_private = data.get('is_private')
+
+        print('@@')
+        print(user_id, diary_id, content_to_update)
+        print('@@')
+
+        try:
+            result = db.diaries.update_one(
+                {'_id': ObjectId(diary_id)},
+                {'$set': {
+                    'content': content_to_update,
+                    'is_private': is_private
+                }}
+            )
+
+            if result.modified_count == 1:
+                return jsonify({"message": "일기가 수정되었습니다."})
+            else:
+                return jsonify({"message": "일기 수정에 실패했습니다."})
+
+        except Exception as e:
+            return jsonify({"message": "오류가 발생했습니다."}), 500
+
     # 내가 작성한 일기 삭제
     #@app.route('/diary/<diary_id>', methods=['DELETE'])
     @app.route('/diary/<diary_id>/delete', methods=['POST']) # 기존 DELETE를 사용했으나 교체
