@@ -47,11 +47,16 @@
         const editDiaryButton = document.querySelector('.diary-edit-button');
 
         editDiaryButton.addEventListener('click', async () => {
+          const original_content = '{{ diary.content }}';
           const content = document.querySelector('.diary-edit-textarea').value;
           const is_private = document.querySelector('.edit-check-private-checkbox').checked;
           const diary_id = '{{ diary._id }}';
 
-          console.log('수정할 일기 정보', content, is_private, diary_id)
+          if (original_content === content) {
+            alert("변경된 내용이 없습니다. 내용을 수정해주세요.");
+            document.querySelector('.diary-edit-textarea').focus();
+            return;
+          }
 
           const response = await fetch(`/api/diary/${diary_id}/update`, {
             method: 'PUT',
