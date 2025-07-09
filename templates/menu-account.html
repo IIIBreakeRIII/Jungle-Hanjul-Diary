@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Account-Setting | Hanjul-Diary</title>
+    <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
+	</head>
+
+  <body class="bg-[rgba(var(--bg-orange))]">
+    <main class="min-h-screen flex flex-col justify-center">
+			<section class="flex justify-center">
+        <div class="logo flex flex-row items-center pb-[20px]">
+          <img src="{{ url_for('static', filename='logo.png') }}" class="w-[140px] max-[720px]:w-[100px] object-contain" />
+          <p class="text-[40px] max-[720px]:text-[28px] font-[500] text-center">일기, 한마디</p>
+        </div>
+      </section> 
+
+      <section>
+        <div class="mx-[90px] max-[720px]:mx-[40px] shadow-div-parent p-8 rounded-[12px] flex flex-col">
+          <div class="pt-[20px] pb-[20px] text-[20px] font-[500] text-center">
+            <span>회원정보</span>
+          </div>
+					<div class="account-info-div w-full">
+						<div class="id-info-div mt-[20px] flex flex-row gap-x-4 w-full">
+							<div class="py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] text-[rgba(var(--primary))] font-[100] border rounded-[8px] w-1/5 text-center">
+								아이디
+							</div>
+							<div class="id-field-div py-[16px] pl-[20px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[100] border rounded-[8px] hover:border-primary w-4/5">
+								testaccount1
+							</div>
+						</div>
+						<div class="name-info-div mt-[20px] flex flex-row gap-x-4 w-full">
+							<div class="py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] text-[rgba(var(--primary))] font-[100] border rounded-[8px] w-1/5 text-center">
+								이름
+							</div>
+							<div class="name-info-div py-[16px] pl-[20px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[100] border rounded-[8px] hover:border-primary w-4/5">
+								홍길동	
+							</div>
+						</div>
+					</div>
+					<a href="{{ url_for('show_main_page') }}" class="mt-[40px] w-full">
+						<button class="py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[200] border rounded-[12px] hover:border-primary w-full">
+							로그아웃
+						</button>
+					</a>
+					<div class="text-[8px] font-[100] text-[rgba(var(--gray))] text-center mt-[40px]">
+						<span>서비스 버전 : 한줄 일기 v1.0</span>
+						<br>
+						<span>개발자 사이트 방문 : https://github.com/ndopy/hanjul-diary</span>
+					</div>
+        </div>
+      </section>
+			<div class="mx-[90px] max-[720px]:mx-[40px]">
+				<a href="{{ url_for('show_main_page') }}">
+					<button class="mt-[20px] py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[200] border rounded-[12px] hover:border-primary w-full">
+						메뉴화면으로 돌아가기
+					</button>
+				</a>
+			</div>
+    </main>
+  </body>
+</html>
