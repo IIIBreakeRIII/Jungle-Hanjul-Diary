@@ -38,5 +38,39 @@
         </div>
       </section>
     </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const createDiaryButton = document.querySelector('.create-diary-button');
+
+        createDiaryButton.addEventListener('click', () => {
+          // 일기 작성 api 호출
+          postDiary()
+        })
+      })
+
+      // 일기 저장 API
+      async function postDiary() {
+        const response = await fetch('/api/diary/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            'content': document.querySelector('.write-diary-textarea').value,
+            'isPrivate': document.querySelector('.check-private-checkbox').checked
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert(data.message);
+          window.location.href = '/diary/main';
+        }
+      }
+
+
+    </script>
   </body>
-</html
+</html>

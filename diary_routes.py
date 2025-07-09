@@ -2,49 +2,66 @@ from flask import request, jsonify, render_template, redirect
 from db import db
 from bson import ObjectId
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
-from datetime import datetime
+from datetime import datetime, UTC
+from auth_routes import handle_token_validation
+
 
 # 일기 관련 코드 작성 
 
 
 def register_diary_routes(app):
-
     # 메인 페이지
     @app.route('/diary/main', methods=['GET'])
+    @handle_token_validation
     def show_main_page():
         return render_template('menu-main.html')
-    
 
-############################################################
 
-    #글쓰기 페이지
+    # 일기 작성 페이지
     @app.route('/diary/write', methods=['GET'])
+    @handle_token_validation
     def show_write_page():
         return render_template('menu-writeDiary.html')
     
-    # 일기 작성
-    @app.route('/diary', methods=['POST'])
+    # 일기 작성 API
+    @app.route('/api/diary/create', methods=['POST'])
+    @handle_token_validation
     def create_diary():
-        data = request.json
-        content = data.get("content")
-        diary_id = data.get("diary_id")
-        name = data.get("name")
-        is_public = data.get("is_public", False)
+        try:
+            data = request.json
+            content = data.get("content")
+            is_private = data.get("isPrivate")
+            user_id = get_jwt_identity()
+            created_at = datetime.now(UTC)
 
-        diary = {
-            "diary_id": diary_id, # 일기 작성자 user ID
-            "name": name,
-            "content": content,
-            "is_public": is_public
-        }
-        db.diaries.insert_one(diary)
+            print(content, is_private, user_id)
+
+            diary = {
+                "content": content,
+                "is_private": is_private,
+                "user_id": user_id,
+                "created_at": created_at
+            }
+
+            db.diaries.insert_one(diary)
+
+            return jsonify({
+                'message': '일기가 저장되었습니다.'
+            });
+
+        except Exception as e:
+            return jsonify({
+                'message': '일기 저장 중 오류가 발생했습니다.',
+            })
+
         #return jsonify({"message": "일기 저장 완료"})
-        return render_template('menu-main.html', message="일기 저장 완료")
+        # return render_template('menu-main.html', message="일기 저장 완료")
     
 ############################################################
     
     # 랜덤 일기 보기 페이지(랜덤 일기 조회)
     @app.route('/diary/random', methods=['GET'])
+    @handle_token_validation
     def get_random_diary():
         random_diaries = list(db.diaries.aggregate([
             {"$match": {"is_public": True}},
