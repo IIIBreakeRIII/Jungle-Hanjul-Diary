@@ -45,20 +45,23 @@ def register_comments_routes(app):
     data = request.json
     comment_to_update = data.get('comment')
 
-    print(comment_id)
-    print(comment_to_update)
-
     result = db.comments.update_one(
       {'_id': ObjectId(comment_id)},
       {'$set': {'comment': comment_to_update}}
     )
-    if result.modified_count == 1:
+
+    if result.matched_count == 0:
+      return jsonify({"message": "해당 댓글을 찾을 수 없습니다."}), 404
+    elif result.modified_count == 0:
+      return jsonify({
+        "message": "댓글 수정이 완료되었습니다. (내용이 이전과 동일합니다.)",
+        "redirect": url_for('show_diary', diary_id=diary_id)
+      })
+    else:
       return jsonify({
         "message": "댓글 수정이 완료되었습니다.",
         "redirect": url_for('show_diary', diary_id=diary_id)
       })
-    else:
-      return jsonify({"message": "댓글 수정에 실패했습니다."})
 
   # 댓글 삭제
   @app.route('/diary/<diary_id>/comments/<comment_id>', methods=['DELETE'])
@@ -67,4 +70,37 @@ def register_comments_routes(app):
     return jsonify({
       "message": "댓글 삭제에 성공했습니다.",
       "redirect": url_for('show_diary', diary_id=diary_id)
+    })
+
+  # [내가 쓴 일기] 의 댓글 수정
+  @app.route('/diary/me/<diary_id>/comments/<comment_id>', methods=['PUT'])
+  def update_my_diary_comment(diary_id, comment_id):
+    data = request.json
+    comment_to_update = data.get('comment')
+
+    result = db.comments.update_one(
+      {'_id': ObjectId(comment_id)},
+      {'$set': {'comment': comment_to_update}}
+    )
+
+    if result.matched_count == 0:
+      return jsonify({"message": "해당 댓글을 찾을 수 없습니다."}), 404
+    elif result.modified_count == 0:
+      return jsonify({
+        "message": "댓글 수정이 완료되었습니다. (내용이 이전과 동일합니다.)",
+        "redirect": url_for('edit_diary', diary_id=diary_id)
+      })
+    else:
+      return jsonify({
+        "message": "댓글 수정이 완료되었습니다.",
+        "redirect": url_for('edit_diary', diary_id=diary_id)
+      })
+
+  # [내가 쓴 일기] 의 댓글 삭제
+  @app.route('/diary/me/<diary_id>/comments/<comment_id>', methods=['DELETE'])
+  def delete_my_diary_comment(diary_id, comment_id):
+    result = db.comments.delete_one({'_id': ObjectId(comment_id)})
+    return jsonify({
+      "message": "댓글 삭제에 성공했습니다.",
+      "redirect": url_for('edit_diary', diary_id=diary_id)
     })

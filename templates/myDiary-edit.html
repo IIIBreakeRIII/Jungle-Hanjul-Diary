@@ -53,6 +53,7 @@
                     <div class="diary-reply-edit-div flex items-center">
                       <button class="diary-reply-edit-button ml-2 px-3 py-1 text-[10px] border rounded-[6px] shadow-div-parent hover:border-primary">수정</button>
                       <button class="diary-reply-save-button ml-2 px-3 py-1 text-[10px] border rounded-[6px] shadow-div-parent hover:border-primary hidden">저장</button>
+                      <button class="diary-reply-cancel-button ml-2 px-3 py-1 text-[10px] border rounded-[6px] shadow-div-parent hover:border-primary hidden">취소</button>
                       <button class="diary-reply-delete-button ml-[12px] px-3 py-1 text-[10px] text-[rgba(var(--red))] border rounded-[6px] shadow-div-parent hover:border-warn">삭제</button>
                     </div>
                   </div>
@@ -131,6 +132,123 @@
           alert(data.message);
         }
       })
+
+      // 댓글 수정 및 삭제 API 추가
+      const diaryCommentsContainer = document.querySelector('.myDiary-edit-main-div');
+
+      diaryCommentsContainer.addEventListener('click', async (event) => {
+        if (event.target.matches('.diary-reply-save-button')) {
+          // 내가 작성한 댓글 수정 이벤트
+          const parent = event.target.closest('.diary-reply-div');
+          const text = parent.querySelector('.diary-reply-text');
+          const input = parent.querySelector('.diary-reply-edit-input');
+          const editBtn = parent.querySelector('.diary-reply-edit-button');
+          const cancelBtn = parent.querySelector('.diary-reply-cancel-button');
+          const saveBtn = parent.querySelector('.diary-reply-save-button');
+          const revealMine = parent.querySelector('.reply-reveal-my-text');
+
+          // 서버에 댓글 업데이트 요청
+          const diary_id = '{{ diary._id }}';
+          const comment_id = parent.dataset.commentId;
+          const comment = input.value;
+
+          // 유효성 검사 : 댓글은 빈 문자열이 될 수 없다.
+          if (comment === '' || comment.trim() === '') {
+            alert('댓글을 입력해주세요!');
+            input.value = '';
+            input.focus();
+            return false;
+          }
+
+          const response = await fetch(`/diary/me/${diary_id}/comments/${comment_id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              diary_id: diary_id,
+              comment_id: comment_id,
+              comment: comment
+            })
+          });
+
+          const data = await response.json();
+          if (data.redirect) {
+            alert(data.message);
+            window.location.href = data.redirect;
+          }
+
+        } else if (event.target.matches('.diary-reply-cancel-button')) {
+          // 수정하다가 취소 버튼을 누를 경우 -> 원래 댓글 내용으로 되돌려야 한다.
+          const parent = event.target.closest('.diary-reply-div');
+          const text = parent.querySelector('.diary-reply-text');
+          const input = parent.querySelector('.diary-reply-edit-input');
+          const editBtn = parent.querySelector('.diary-reply-edit-button');
+          const cancelBtn = parent.querySelector('.diary-reply-cancel-button');
+          const saveBtn = parent.querySelector('.diary-reply-save-button');
+          const revealMine = parent.querySelector('.reply-reveal-my-text');
+
+          text.textContent = input.dataset.originalComment;
+          text.classList.remove('hidden');
+          input.classList.add('hidden');
+          saveBtn.classList.add('hidden');
+          editBtn.classList.remove('hidden');
+          cancelBtn.classList.add('hidden');
+          revealMine.classList.remove('hidden');
+          input.value = '';
+
+        } else if (event.target.matches('.diary-reply-delete-button')) {
+          // 내가 작성한 댓글 삭제 이벤트
+          const confirmed = confirm('댓글을 삭제하시겠습니까?');
+          if (!confirmed) return;
+
+          const parent = event.target.closest('.diary-reply-div');
+          const comment_id = parent.dataset.commentId;
+
+          const diary_id = '{{ diary._id }}';
+          const response = await fetch(`/diary/me/${diary_id}/comments/${comment_id}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              diary_id: diary_id,
+              comment_id: comment_id
+            })
+          });
+
+          const data = await response.json();
+          if (data.redirect) {
+            alert(data.message)
+            window.location.href = data.redirect;
+          }
+        }
+      })
+
+      document.querySelectorAll('.diary-reply-edit-button').forEach(function(editBtn) {
+        editBtn.addEventListener('click', function() {
+          const parent = editBtn.closest('.diary-reply-div');
+          const text = parent.querySelector('.diary-reply-text');
+          const input = parent.querySelector('.diary-reply-edit-input');
+          const cancelBtn = parent.querySelector('.diary-reply-cancel-button');
+          const saveBtn = parent.querySelector('.diary-reply-save-button');
+          const revealMine = parent.querySelector('.reply-reveal-my-text');
+
+          // 원래 댓글 내용을 data 속성에 저장
+          input.dataset.originalComment = text.textContent.trim();
+
+          // 텍스트 숨기고 input 보이기
+          text.classList.add('hidden');
+          input.classList.remove('hidden');
+          input.value = text.textContent.trim();
+          editBtn.classList.add('hidden');
+          cancelBtn.classList.remove('hidden'); // 취소 버튼 추가
+          saveBtn.classList.remove('hidden');
+          revealMine.classList.add('hidden')
+          input.focus();
+        });
+      });
+
     </script>
   </body>
 </html>
