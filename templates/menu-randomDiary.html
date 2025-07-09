@@ -31,7 +31,6 @@
           <p class="text-[16px] font-[300] mt-[20px] mb-[12px]">댓글</p>
           {% if comments %}
             {% for comment in comments %}
-              {# comment 의 is_mine 이 true 인 경우 #}
               {% if comment.is_mine %}
                 <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))] flex items-center justify-between">
                   <div class="diary-reply-div flex items-center">
@@ -52,7 +51,14 @@
                 </div>
               {% endif %}
             {% endfor %}
+          {% else %}
+            <div class="py-[12px] border-b border-b-[rgba(var(--primary))]">
+              <p class="text-[16px] font-[100] text-[rgba(var(--gray))] text-center">
+                아직 작성된 댓글이 없습니다.
+              </p>
+            </div>
           {% endif %}
+
           <div class="diary-add-reply mt-[40px] flex items-center">
             <input type="text" placeholder="댓글 달기" maxlength="30" class="diary-add-reply-input flex-1 bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]"/>
             <button class="diary-add-reply-button text-[rgba(var(--black))] ml-[12px] px-[20px] py-2 shadow-div-parent border rounded-[8px] hover:border-primary">
@@ -66,6 +72,33 @@
 
     <script>
       document.addEventListener('DOMContentLoaded', function() {
+
+        // 수정된 댓글 저장 이벤트
+        const commentSaveBtn = document.querySelector('.diary-reply-save-button');
+        commentSaveBtn.addEventListener('click', async () => {
+          // 수정된 댓글 내용
+          const comment = document.querySelector('.diary-reply-edit-input').value;
+          const diary_id = '{{ diary._id }}';
+          const comment_id = '{{ comment._id }}';
+
+          console.log(comment_id)
+
+          const response = await fetch(`/diary/${diary_id}/comments/${comment_id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              diary_id: diary_id,
+              comment_id: comment_id,
+              comment: comment
+            })
+          });
+
+          const data = await response.json();
+          console.log(data);
+        })
+
         document.querySelectorAll('.diary-reply-edit-button').forEach(function(editBtn) {
           editBtn.addEventListener('click', function() {
             const parent = editBtn.closest('.diary-reply-div');

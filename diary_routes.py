@@ -74,10 +74,21 @@ def register_diary_routes(app):
         comments = list(db.comments.find({'diary_id': diary['_id']}))
 
         # comments 안의 각 comment 마다 user_id 와 작성자 id 가 동일한지 체크하기
+        if not comments:
+            return render_template('menu-randomDiary.html',
+               diary=diary,
+               comments=[],
+               message="아직 작성된 댓글이 없습니다.",
+               has_comments=False,
+               current_user_id=user_id)
+
         for comment in comments:
             if comment['user_id'] == user_id:
                 comment['is_mine'] = True
+            else:
+                comment['is_mine'] = False
 
+        print('@@ 랜덤일기 코멘트 조회@@@')
         print(comments)
 
         return render_template('menu-randomDiary.html', diary=diary, comments=comments)
@@ -104,6 +115,8 @@ def register_diary_routes(app):
         db.comments.insert_one(comment)
 
         return jsonify({"message": "댓글 작성에 성공했습니다."})
+
+
 
 
 ############################################################
@@ -192,23 +205,21 @@ def register_diary_routes(app):
         # return render_template('myDiary-edit.html', message="일기 삭제 완료")
     
 ############################################################    
-    
 
+   # 랜덤 일기에 대해 내가 작성한 댓글 수정
+    @app.route('/diary/<diary_id>/comments/<comment_id>', methods=['PUT'])
+    def update_diary_comment(comment_id):
+        data = request.json
+        comment_to_update = data.get('comment')
 
-
-#    # 랜덤 일기에 대해 내가 작성한 댓글 수정
-#     @app.route('/diary/<post_id>/comments', methods=['PUT'])
-#     def update_diary(post_id):
-#         data = request.json
-#         comments_receive = data.get('comments')
-#         result = db.diaries.update_one(
-#             {'_id': ObjectId(diary_id)},
-#             {'$set': {'content': comments_receive}}
-#         )
-#         if result.modified_count == 1:
-#             return jsonify({"message": "수정 완료"})
-#         else:
-#             return jsonify({"message": "수정 실패"})
+        result = db.diaries.update_one(
+            {'_id': ObjectId(comment_id)},
+            {'$set': {'comment': comment_to_update}}
+        )
+        if result.modified_count == 1:
+            return jsonify({"message": "수정 완료"})
+        else:
+            return jsonify({"message": "수정 실패"})
         
 #     # 댓글 삭제
 #     @app.route('/diary/<diary_id>', methods=['DELETE'])
