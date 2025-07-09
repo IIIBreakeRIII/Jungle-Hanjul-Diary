@@ -1,3 +1,5 @@
+import re
+
 from flask import request, jsonify, render_template, redirect, url_for
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
 from db import db
@@ -33,15 +35,23 @@ def register_my_diary_routes(app):
     if not keyword:
       return redirect(url_for('show_my_diaries_page'))
 
-    diaries = list(db.diaries.find({
-      "user_id": user_id,
-      "content": {"$regex": keyword, "$options": "i"}
-    }))
+    try:
+      # 특수문자를 이스케이프 처리
+      escaped_keyword = re.escape(keyword)
 
-    for diary in diaries:
-      diary['_id'] = str(diary['_id'])
+      diaries = list(db.diaries.find({
+        "user_id": user_id,
+        "content": {"$regex": escaped_keyword, "$options": "i"}
+      }))
 
-    return render_template('menu-myDiary.html', my_diaries=diaries)
+      for diary in diaries:
+        diary['_id'] = str(diary['_id'])
+
+      return render_template('menu-myDiary.html', my_diaries=diaries)
+
+    except Exception as e:
+      # 검색 실패 시 ,빈 결과로 페이지 렌더링
+      return render_template('menu-myDiary.html', my_diaries=[])
 
   # 내가 작성한 일기 상세 조회
   @app.route('/diary/me/<diary_id>', methods=['GET'])
