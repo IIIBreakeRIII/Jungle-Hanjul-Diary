@@ -13,7 +13,7 @@ def register_diary_routes(app):
   @handle_token_validation
   def show_main_page():
       return render_template('menu-main.html')
-
+  
   # 일기 작성 페이지
   @app.route('/diary/write', methods=['GET'])
   @handle_token_validation
@@ -130,3 +130,12 @@ def register_diary_routes(app):
       return jsonify({'message': '좋아요가 반영되었습니다.', 'like_count': new_like_count})
     except Exception as e:
       return jsonify({'message': '좋아요 처리 중 오류가 발생했습니다.'}), 500
+    
+
+  @app.route('/diary/accountinfo', methods=['GET'])
+  @handle_token_validation
+  def show_account_info():
+    user_id = get_jwt_identity()
+    user = db.users.find_one({'user_id': user_id})
+
+    return render_template('menu-account.html', user=user)
