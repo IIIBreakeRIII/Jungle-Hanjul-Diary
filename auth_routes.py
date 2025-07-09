@@ -204,3 +204,7 @@ def register_auth_routes(app):
     # 쿠키에서 액세스 토큰 & 리프레시 토큰을 모두 제거
     unset_jwt_cookies(response)
     return response
+  
+  @app.route('/', methods=['GET'])
+  def account_setting():
+    return render_template('menu-account.html')
