@@ -205,6 +205,6 @@ def register_auth_routes(app):
     unset_jwt_cookies(response)
     return response
   
-  @app.route('/', methods=['GET'])
+  @app.route('/api/account_setting', methods=['GET'])
   def account_setting():
     return render_template('menu-account.html')
