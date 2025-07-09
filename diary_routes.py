@@ -179,10 +179,6 @@ def register_diary_routes(app):
         content_to_update = data.get('content')
         is_private = data.get('is_private')
 
-        print('@@')
-        print(user_id, diary_id, content_to_update)
-        print('@@')
-
         try:
             result = db.diaries.update_one(
                 {'_id': ObjectId(diary_id)},
@@ -201,12 +197,15 @@ def register_diary_routes(app):
             return jsonify({"message": "오류가 발생했습니다."}), 500
 
     # 내가 작성한 일기 삭제
-    #@app.route('/diary/<diary_id>', methods=['DELETE'])
-    @app.route('/diary/<diary_id>/delete', methods=['POST']) # 기존 DELETE를 사용했으나 교체
+    @app.route('/api/diary/<diary_id>/delete', methods=['DELETE']) # 기존 DELETE를 사용했으나 교체
+    @handle_token_validation
     def delete_diary(diary_id):
         result = db.diaries.delete_one({'_id': ObjectId(diary_id)})
-        # return jsonify({"message": "일기 삭제 완료"})
-        return render_template('myDiary-edit.html', message="일기 삭제 완료")
+
+        return jsonify({
+            "message": "일기가 삭제되었습니다."
+        })
+        # return render_template('myDiary-edit.html', message="일기 삭제 완료")
     
 ############################################################    
     

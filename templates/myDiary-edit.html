@@ -72,6 +72,26 @@
           }
         })
       })
+
+      const deleteDiaryButton = document.querySelector('.diary-delete-button');
+      deleteDiaryButton.addEventListener('click', async () => {
+        const confirmed = confirm('정말 삭제하시겠습니까?');
+        if (!confirmed) return;
+
+        const diary_id = '{{ diary._id }}';
+
+        const response = await fetch(`/api/diary/${diary_id}/delete`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message);
+          window.location.href = `/diaries/me`;
+        } else {
+          alert(data.message);
+        }
+      })
     </script>
   </body>
-</html
+</html>
