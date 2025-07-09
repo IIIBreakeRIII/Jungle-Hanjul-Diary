@@ -10,7 +10,7 @@
   <body class="bg-[rgba(var(--bg-orange))]">
     <main class="min-h-screen flex flex-col justify-center">
 			<section class="flex justify-center">
-        <div class="logo flex flex-row items-center">
+        <div class="logo flex flex-row items-center pb-[20px]">
           <img src="{{ url_for('static', filename='logo.png') }}" class="w-[140px] max-[720px]:w-[100px] object-contain" />
           <p class="text-[40px] max-[720px]:text-[28px] font-[500] text-center">일기, 한마디</p>
         </div>
@@ -40,6 +40,13 @@
                 <p class="mt-[20px] text-center text-gray-500">작성한 일기가 없습니다.</p>
             {% endif %}
           </div>
+        </div>
+        <div class="mx-[90px] max-[720px]:mx-[40px]">
+          <a href="{{ url_for('show_main_page') }}">
+            <button class="mt-[20px] py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[200] border rounded-[12px] hover:border-primary w-full">
+              메뉴화면으로 돌아가기
+            </button>
+          </a>
         </div>
       </section>
     </main>

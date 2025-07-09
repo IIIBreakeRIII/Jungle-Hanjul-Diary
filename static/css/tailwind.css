@@ -611,10 +611,6 @@ video {
   margin-right: 8px;
 }
 
-.mt-10{
-  margin-top: 2.5rem;
-}
-
 .mt-2{
   margin-top: 0.5rem;
 }
@@ -649,6 +645,18 @@ video {
 
 .min-h-screen{
   min-height: 100vh;
+}
+
+.w-10\/12{
+  width: 83.333333%;
+}
+
+.w-3\/12{
+  width: 25%;
+}
+
+.w-4\/12{
+  width: 33.333333%;
 }
 
 .w-\[140px\]{
@@ -693,6 +701,10 @@ video {
   align-items: center;
 }
 
+.justify-end{
+  justify-content: flex-end;
+}
+
 .justify-center{
   justify-content: center;
 }
@@ -733,6 +745,10 @@ video {
 
 .whitespace-nowrap{
   white-space: nowrap;
+}
+
+.break-words{
+  overflow-wrap: break-word;
 }
 
 .rounded-\[12px\]{
@@ -780,11 +796,6 @@ video {
   padding: 2rem;
 }
 
-.px-2{
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
-
 .px-3{
   padding-left: 0.75rem;
   padding-right: 0.75rem;
@@ -815,6 +826,11 @@ video {
   padding-bottom: 12px;
 }
 
+.py-\[16px\]{
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
 .py-\[40px\]{
   padding-top: 40px;
   padding-bottom: 40px;
@@ -835,6 +851,10 @@ video {
 
 .pb-\[8px\]{
   padding-bottom: 8px;
+}
+
+.pr-2{
+  padding-right: 0.5rem;
 }
 
 .pt-\[20px\]{
@@ -869,6 +889,10 @@ video {
   font-size: 16px;
 }
 
+.text-\[18px\]{
+  font-size: 18px;
+}
+
 .text-\[20px\]{
   font-size: 20px;
 }
@@ -883,6 +907,10 @@ video {
 
 .font-\[100\]{
   font-weight: 100;
+}
+
+.font-\[200\]{
+  font-weight: 200;
 }
 
 .font-\[300\]{
@@ -915,6 +943,11 @@ video {
 
 .text-\[rgba\(var\(--red\)\)\]{
   color: rgba(var(--red));
+}
+
+.text-gray-500{
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity, 1));
 }
 
 .shadow-div-parent {
@@ -1014,9 +1047,18 @@ textarea {
     width: 100px;
   }
 
+  .max-\[720px\]\:py-\[10px\]{
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
   .max-\[720px\]\:py-\[28px\]{
     padding-top: 28px;
     padding-bottom: 28px;
+  }
+
+  .max-\[720px\]\:text-\[16px\]{
+    font-size: 16px;
   }
 
   .max-\[720px\]\:text-\[18px\]{
@@ -1032,5 +1074,14 @@ textarea {
   .max-\[540px\]\:px-\[12px\]{
     padding-left: 12px;
     padding-right: 12px;
+  }
+
+  .max-\[540px\]\:py-3{
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .max-\[540px\]\:text-\[12px\]{
+    font-size: 12px;
   }
 }
