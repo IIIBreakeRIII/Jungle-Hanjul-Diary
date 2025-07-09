@@ -7,8 +7,6 @@
     <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
 	</head>
 
-  {# 일기에 댓글과 관련된 이벤트 직후 해당 이벤트가 정상적으로 수행되었음을 보여주기 위한 화면 #}
-
   <body class="bg-[rgba(var(--bg-orange))]">
     <main class="min-h-screen flex flex-col justify-center">
 			<section class="flex justify-center">
@@ -30,6 +28,12 @@
               {{ diary.content }}
             </p>
           </div>
+          <button class="diary-like-button flex flex-row justify-center px-[20px] py-[12px] border rounded-[8px] shadow-div-parent bg-[rgba(var(--bg-orange))] hover:border-primary">
+            <p class="text-[rgba(var(--black))] font-[300]">👍 좋아요 &nbsp</p>
+            <p class="diary-like-count-text text-[rgba(var(--primary))] font-[300]">
+              {{ diary.like_count if diary.like_count is defined else 0 }}개
+            </p>
+          </button>
           <p class="text-[16px] font-[300] mt-[20px] mb-[12px]">댓글</p>
           {% if comments %}
             {% for comment in comments %}
@@ -202,6 +206,28 @@
           const data = await response.json();
           if (data.redirect) {
             window.location.href = data.redirect;
+          }
+        });
+
+        // 좋아요 버튼 클릭 이벤트
+        document.querySelector('.diary-like-button').addEventListener('click', async function() {
+          const diary_id = '{{ diary._id }}';
+          const likeCountElem = this.querySelector('.diary-like-count-text');
+          const response = await fetch(`/api/diary/${diary_id}/like`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          const data = await response.json();
+          console.log('좋아요 응답 status:', response.status, data);
+
+          if (response.ok && data.like_count !== undefined) {
+            likeCountElem.textContent = data.like_count + '개';
+          } else if (response.status === 400) {
+            alert(data.message || '이미 좋아요를 누르셨습니다.');
+          } else {
+            alert(data.message || '좋아요 처리 중 오류가 발생했습니다.');
           }
         });
       });

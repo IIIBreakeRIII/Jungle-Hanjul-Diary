@@ -158,7 +158,6 @@ def register_auth_routes(app):
       return response, 201
 
     except Exception as e:
-      print(f"회원가입 처리 중 오류 발생: {str(e)}")
       return jsonify({"message": "회원가입 처리 중 오류가 발생했습니다."}), 500
 
 
@@ -205,39 +204,3 @@ def register_auth_routes(app):
     # 쿠키에서 액세스 토큰 & 리프레시 토큰을 모두 제거
     unset_jwt_cookies(response)
     return response
-
-  ############################# 인증 테스트 코드 ############################
-
-  # jwt 인증 테스트 코드
-  @app.route('/api/test-auth', methods=['GET'])
-  @handle_token_validation
-  def test_auth():
-    current_user = get_jwt_identity()
-    return jsonify({"message": f"Hello, {current_user}!"}), 200
-
-  # jwt 테스트 - 인증이 필요한 페이지 접속 가능 여부
-  @app.route('/api/test-auth-token', methods=['GET'])
-  @handle_token_validation
-  def test_auth_token():
-      return render_template('auth-test.html')
-
-
-  """
-  FE 테스트 코드입니다!
-  백엔드 개발을 진행할 때는 해당 루트를 삭제하고 진행해주세요!
-  """
-  @app.route('/menu-writeDiary', methods=['GET'])
-  def temp_menu_writeDiary():
-    return render_template('menu-writeDiary.html')
-
-  @app.route('/menu-myDiary', methods=['GET'])
-  def temp_menu_myDiary():
-    return render_template('menu-myDiary.html')
-
-  @app.route('/menu-randomDiary', methods=['GET'])
-  def temp_menu_randomDiary():
-    return render_template('menu-randomDiary.html')
-  
-  @app.route('/myDiary-edit', methods=['GET'])
-  def temp_myDiary_edit():
-    return render_template('myDiary-edit.html')

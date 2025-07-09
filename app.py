@@ -1,6 +1,8 @@
 from flask import Flask, render_template, jsonify
 from auth_routes import register_auth_routes
 from diary_routes import register_diary_routes
+from comments_routes import register_comments_routes
+from my_diary_routes import register_my_diary_routes
 
 import os
 from dotenv import load_dotenv
@@ -50,6 +52,8 @@ def handle_invalid_token(reason):
 # 각각 라우트 등록
 register_auth_routes(app)
 register_diary_routes(app)
+register_comments_routes(app)
+register_my_diary_routes(app)
 
 
 @app.route("/")
