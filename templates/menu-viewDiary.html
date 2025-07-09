@@ -41,7 +41,7 @@
                 <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))] flex items-center justify-between" data-comment-id="{{ comment._id }}">
                   <div class="diary-reply-div flex items-center">
                     <span class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">{{ comment.comment }}</span>
-                    <input class="diary-reply-edit-input flex-1 bg-[rgba(var(--bg-orange))] hidden shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]" maxlength="30" value=""/>
+                    <input class="diary-reply-edit-input flex-1 bg-[rgba(var(--bg-orange))] hidden shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]" value=""/>
                     <p class="reply-reveal-my-text ml-[8px] text-[10px] font-[100] text-[rgba(var(--gray))]">(내가 쓴 댓글)</p>
                   </div>
                   <div class="diary-reply-edit-div flex items-center">
@@ -66,7 +66,7 @@
           {% endif %}
 
           <div class="diary-add-reply mt-[40px] flex items-center">
-            <input type="text" placeholder="댓글 달기" maxlength="30" class="diary-add-reply-input flex-1 bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]"/>
+            <input type="text" placeholder="댓글 달기" class="diary-add-reply-input flex-1 bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]"/>
             <button class="diary-add-reply-button text-[rgba(var(--black))] ml-[12px] px-[20px] py-2 shadow-div-parent border rounded-[8px] hover:border-primary">
               입력
             </button>
@@ -239,5 +239,21 @@
         });
       });
     </script>
+
+    <script type="module">
+      import { setupGraphemeLimiter } from "{{ url_for('static', filename='js/emoji-segmenter.js') }}";
+
+      setupGraphemeLimiter({
+        inputSelector: '.diary-add-reply-input',
+        maxChars: 30,
+        locale: 'ko',
+      });
+
+      setupGraphemeLimiter({
+        inputSelector: '.diary-reply-edit-input',
+        maxChars: 30,
+        locale: 'ko',
+      })
+    </script> 
   </body>
 </html>
