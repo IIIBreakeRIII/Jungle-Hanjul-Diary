@@ -193,7 +193,7 @@
           const commentEl = document.querySelector('.diary-add-reply-input');
           const comment = commentEl.value;
 
-          if (!comment || comment === '') {
+          if (!comment || comment.trim() === '') {
             alert('댓글을 입력해주세요!');
             commentEl.focus();
             return;
