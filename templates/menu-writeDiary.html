@@ -59,7 +59,7 @@
       async function postDiary() {
         // 내용을 입력하지 않으면 사용자에게 경고 띄우기
         const textareaEl = document.querySelector('.write-diary-textarea');
-        if (textareaEl.value === '') {
+        if (textareaEl.value.trim() === '') {
           alert('내용을 입력해주세요!');
           textareaEl.focus();
           return;
