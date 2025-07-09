@@ -125,19 +125,38 @@ def register_diary_routes(app):
 ############################################################
 
     # 내가 쓴 글 페이지
-    @app.route('/diary/my', methods=['GET'])
+    @app.route('/diaries/me', methods=['GET'])
+    @handle_token_validation
     def show_my_diaries_page():
-        return render_template('menu-myDiary.html')
+        # 현재 로그인한 사용자 정보를 쿠키의 토큰에서 가져오기
+        user_id = get_jwt_identity()
+
+        # 로그인한 유저가 작성한 일기만 조회
+        my_diaries = list(db.diaries.find({"user_id": user_id}))
+
+        for diary in my_diaries:
+            diary['_id'] = str(diary['_id'])
+
+        return render_template('menu-myDiary.html',my_diaries=my_diaries)
 
     # 내가 쓴 글 페이지(내가 작성한 일기 목록 조회)
-    @app.route('/diary', methods=['GET'])
+    @app.route('/api/diaries/me', methods=['GET'])
+    @handle_token_validation
     def get_my_diaries():
-        diary_id = request.args.get('diary_id') 
-        diaries = list(db.diaries.find({"diary_id": diary_id}))
-        for diary in diaries:
-            diary['_id'] = str(diary['_id'])
-        #return jsonify({"data": diaries})
-        return render_template('menu-myDiary.html', diaries=diaries)
+        # 현재 로그인한 사용자 정보를 쿠키의 토큰에서 가져오기
+        user_id = get_jwt_identity()
+
+        # 로그인한 유저가 작성한 일기만 조회
+        my_diaries = list(db.diaries.find({"user_id": user_id}))
+
+        print(my_diaries)
+
+        # diary_id = request.args.get('diary_id')
+        # diaries = list(db.diaries.find({"diary_id": diary_id}))
+        # for diary in diaries:
+        #     diary['_id'] = str(diary['_id'])
+        return jsonify({"message": 'test'})
+        # return render_template('menu-myDiary.html', diaries=diaries)
     
     # 내가 작성한 일기 검색
     @app.route('/diary/search', methods=['GET'])
@@ -161,6 +180,8 @@ def register_diary_routes(app):
     def edit_diary(diary_id):
         diary = db.diaries.find_one({'_id': ObjectId(diary_id)})
         diary['_id'] = str(diary['_id'])
+
+        print(diary)
         return render_template('myDiary-edit.html', diary=diary)
     
     # 내가 작성한 일기 수정(내가 작성한 것만 나온다.)
