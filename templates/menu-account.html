@@ -27,7 +27,7 @@
 								아이디
 							</div>
 							<div class="id-field-div py-[16px] pl-[20px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[100] border rounded-[8px] hover:border-primary w-4/5">
-								testaccount1
+								{{ user.user_id }}
 							</div>
 						</div>
 						<div class="name-info-div mt-[20px] flex flex-row gap-x-4 w-full">
@@ -35,12 +35,12 @@
 								이름
 							</div>
 							<div class="name-info-div py-[16px] pl-[20px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[100] border rounded-[8px] hover:border-primary w-4/5">
-								홍길동	
+								{{ user.user_name }}	
 							</div>
 						</div>
 					</div>
 					<a href="{{ url_for('show_main_page') }}" class="mt-[40px] w-full">
-						<button class="py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[200] border rounded-[12px] hover:border-primary w-full">
+						<button id="logoutBtn" class="py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[200] border rounded-[12px] hover:border-primary w-full">
 							로그아웃
 						</button>
 					</a>
@@ -59,5 +59,28 @@
 				</a>
 			</div>
     </main>
+
+    <script>
+      // 로그아웃 버튼 클릭 시 로그아웃 API 호출
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+          const isConfirmed = confirm('로그아웃 하시겠습니까?');
+          if (!isConfirmed) return;
+
+          const response = await fetch('/api/logout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          const data = await response.json();
+
+          if (data.redirect) {
+            window.location.href = data.redirect;
+          }
+        })
+      })
+    </script>
   </body>
 </html>

@@ -35,18 +35,21 @@
             </p>
           </button>
           <p class="text-[16px] font-[300] mt-[20px] mb-[12px]">댓글</p>
+
+          {# 댓글 목록 #}
           {% if comments %}
             {% for comment in comments %}
               {% if comment.is_mine %}
                 <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))] flex items-center justify-between" data-comment-id="{{ comment._id }}">
-                  <div class="flex items-center w-10/12">
-                    <span class="diary-reply-text w-full break-words pr-2 text-[16px] font-[100] text-[rgba(var(--gray))]">{{ comment.comment }}</span>
-                    <input class="diary-reply-edit-input w-full bg-[rgba(var(--bg-orange))] hidden shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]" value=""/>
-                    <p class="reply-reveal-my-text w-3/12 ml-[8px] text-[10px] font-[100] text-[rgba(var(--gray))]">(내가 쓴 댓글)</p>
+                  <div class="diary-reply-div flex items-center">
+                    <span class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">{{ comment.comment }}</span>
+                    <input class="diary-reply-edit-input flex-1 bg-[rgba(var(--bg-orange))] hidden shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]" value=""/>
+                    <p class="reply-reveal-my-text ml-[8px] text-[10px] font-[100] text-[rgba(var(--gray))]">(내가 쓴 댓글)</p>
                   </div>
-                  <div class="diary-reply-edit-div flex items-center w-4/12 justify-end">
+                  <div class="diary-reply-edit-div flex items-center">
                     <button class="diary-reply-edit-button ml-2 px-3 py-1 text-[10px] border rounded-[6px] shadow-div-parent hover:border-primary">수정</button>
                     <button class="diary-reply-save-button ml-2 px-3 py-1 text-[10px] border rounded-[6px] shadow-div-parent hover:border-primary hidden">저장</button>
+                    <button class="diary-reply-cancel-button ml-2 px-3 py-1 text-[10px] border rounded-[6px] shadow-div-parent hover:border-primary hidden">취소</button>
                     <button class="diary-reply-delete-button ml-[12px] px-3 py-1 text-[10px] text-[rgba(var(--red))] border rounded-[6px] shadow-div-parent hover:border-warn">삭제</button>
                   </div>
                 </div>
@@ -75,7 +78,7 @@
         </div>
       </section>
       <div class="mx-[90px] max-[720px]:mx-[40px]">
-        <button onclick="window.history.back();" class="mt-[20px] py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[200] border rounded-[12px] hover:border-primary w-full">
+        <button onclick="window.location.href='/diary/main'" class="mt-[20px] py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[200] border rounded-[12px] hover:border-primary w-full">
           메뉴화면으로 돌아가기
         </button>
       </div>
@@ -100,6 +103,14 @@
             const comment_id = parent.dataset.commentId;
             const comment = input.value;
 
+            // 유효성 검사 : 댓글은 빈 문자열이 될 수 없다.
+            if (comment === '' || comment.trim() === '') {
+              alert('댓글을 입력해주세요!');
+              input.value = '';
+              input.focus();
+              return false;
+            }
+
             const response = await fetch(`/diary/${diary_id}/comments/${comment_id}`, {
               method: 'PUT',
               headers: {
@@ -114,8 +125,28 @@
 
             const data = await response.json();
             if (data.redirect) {
+              alert(data.message);
               window.location.href = data.redirect;
             }
+
+          } else if (event.target.matches('.diary-reply-cancel-button')) {
+            // 수정하다가 취소 버튼을 누를 경우 -> 원래 댓글 내용으로 되돌려야 한다.
+            const parent = event.target.closest('.diary-reply-div');
+            const text = parent.querySelector('.diary-reply-text');
+            const input = parent.querySelector('.diary-reply-edit-input');
+            const editBtn = parent.querySelector('.diary-reply-edit-button');
+            const cancelBtn = parent.querySelector('.diary-reply-cancel-button');
+            const saveBtn = parent.querySelector('.diary-reply-save-button');
+            const revealMine = parent.querySelector('.reply-reveal-my-text');
+
+            text.textContent = input.dataset.originalComment;
+            text.classList.remove('hidden');
+            input.classList.add('hidden');
+            saveBtn.classList.add('hidden');
+            editBtn.classList.remove('hidden');
+            cancelBtn.classList.add('hidden');
+            revealMine.classList.remove('hidden');
+            input.value = '';
 
           } else if (event.target.matches('.diary-reply-delete-button')) {
             // 내가 작성한 댓글 삭제 이벤트
@@ -139,6 +170,7 @@
 
             const data = await response.json();
             if (data.redirect) {
+              alert(data.message)
               window.location.href = data.redirect;
             }
           }
@@ -149,19 +181,27 @@
             const parent = editBtn.closest('.diary-reply-div');
             const text = parent.querySelector('.diary-reply-text');
             const input = parent.querySelector('.diary-reply-edit-input');
+            const cancelBtn = parent.querySelector('.diary-reply-cancel-button');
             const saveBtn = parent.querySelector('.diary-reply-save-button');
             const revealMine = parent.querySelector('.reply-reveal-my-text');
+
+            // 원래 댓글 내용을 data 속성에 저장
+            input.dataset.originalComment = text.textContent.trim();
+
             // 텍스트 숨기고 input 보이기
             text.classList.add('hidden');
             input.classList.remove('hidden');
             input.value = text.textContent.trim();
             editBtn.classList.add('hidden');
+            cancelBtn.classList.remove('hidden'); // 취소 버튼 추가
             saveBtn.classList.remove('hidden');
             revealMine.classList.add('hidden')
             input.focus();
           });
         });
 
+        /*
+        // TODO [저장] 버튼 이벤트는 상단에 이벤트 위임으로 처리했기에 일단 주석 처리 -> 추후에 제거할 것
         document.querySelectorAll('.diary-reply-save-button').forEach(function(saveBtn) {
           saveBtn.addEventListener('click', function() {
             const parent = saveBtn.closest('.diary-reply-div');
@@ -178,6 +218,7 @@
             revealMine.classList.remove('hidden');
           });
         });
+         */
 
         // 다음 일기 보기 버튼 이벤트
         document.querySelector('.diary-reply-random-button').addEventListener('click', function() {
