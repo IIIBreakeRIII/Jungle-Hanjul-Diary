@@ -651,18 +651,6 @@ video {
   width: 20%;
 }
 
-.w-10\/12{
-  width: 83.333333%;
-}
-
-.w-3\/12{
-  width: 25%;
-}
-
-.w-4\/12{
-  width: 33.333333%;
-}
-
 .w-4\/5{
   width: 80%;
 }
@@ -707,10 +695,6 @@ video {
 
 .items-center{
   align-items: center;
-}
-
-.justify-end{
-  justify-content: flex-end;
 }
 
 .justify-center{
@@ -868,10 +852,6 @@ video {
 
 .pl-\[20px\]{
   padding-left: 20px;
-}
-
-.pr-2{
-  padding-right: 0.5rem;
 }
 
 .pt-\[20px\]{
