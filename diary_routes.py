@@ -58,40 +58,40 @@ def register_diary_routes(app):
     @app.route('/diary/random', methods=['GET'])
     @handle_token_validation
     def get_random_diary():
-        user_id = get_jwt_identity() # 로그인한 사용자
+        try:
+            user_id = get_jwt_identity() # 로그인한 사용자
 
-        random_diaries = list(db.diaries.aggregate([
-            {"$match": {"is_private": False}},
-            { '$sample': { 'size': 1 } }
-            ]))
+            random_diaries = list(db.diaries.aggregate([
+                {"$match": {"is_private": False}},
+                { '$sample': { 'size': 1 } }
+                ]))
 
-        if not random_diaries:
-            return render_template('menu-randomDiary.html', diary=None, message="공개된 일기가 없습니다.")
+            if not random_diaries:
+                return render_template('menu-randomDiary.html', diary=None, message="공개된 일기가 없습니다.")
 
-        diary = random_diaries[0]
-        diary['_id'] = str(diary['_id'])
+            diary = random_diaries[0]
+            diary['_id'] = str(diary['_id'])
 
-        comments = list(db.comments.find({'diary_id': diary['_id']}))
+            comments = list(db.comments.find({'diary_id': diary['_id']}))
 
-        # comments 안의 각 comment 마다 user_id 와 작성자 id 가 동일한지 체크하기
-        if not comments:
-            return render_template('menu-randomDiary.html',
-               diary=diary,
-               comments=[],
-               message="아직 작성된 댓글이 없습니다.",
-               has_comments=False,
-               current_user_id=user_id)
+            # comments 안의 각 comment 마다 user_id 와 작성자 id 가 동일한지 체크하기
+            if not comments:
+                print('댓글이 존재하지 않습니다.')
+                return render_template('menu-randomDiary.html', diary=diary, comments=[])
 
-        for comment in comments:
-            if comment['user_id'] == user_id:
-                comment['is_mine'] = True
-            else:
-                comment['is_mine'] = False
+            for comment in comments:
+                comment['_id'] = str(comment['_id'])
+                if comment['user_id'] == user_id:
+                    comment['is_mine'] = True
+                else:
+                    comment['is_mine'] = False
 
-        print('@@ 랜덤일기 코멘트 조회@@@')
-        print(comments)
+            print('@@ 랜덤일기 코멘트 조회@@@')
+            print(comments)
 
-        return render_template('menu-randomDiary.html', diary=diary, comments=comments)
+            return render_template('menu-randomDiary.html', diary=diary, comments=comments)
+        except Exception as e:
+            return render_template('menu-randomDiary.html', diary=None, comments=[])
     
     # 댓글 작성(상대방의 일기에 댓글 작성)
     @app.route('/diary/<diary_id>/comments', methods=['POST'])
@@ -116,10 +116,6 @@ def register_diary_routes(app):
 
         return jsonify({"message": "댓글 작성에 성공했습니다."})
 
-
-
-
-############################################################
 
     # 내가 쓴 글 페이지
     @app.route('/diaries/me', methods=['GET'])
@@ -203,16 +199,17 @@ def register_diary_routes(app):
             "message": "일기가 삭제되었습니다."
         })
         # return render_template('myDiary-edit.html', message="일기 삭제 완료")
-    
-############################################################    
 
    # 랜덤 일기에 대해 내가 작성한 댓글 수정
     @app.route('/diary/<diary_id>/comments/<comment_id>', methods=['PUT'])
-    def update_diary_comment(comment_id):
+    def update_diary_comment(diary_id, comment_id):
         data = request.json
         comment_to_update = data.get('comment')
 
-        result = db.diaries.update_one(
+        print(comment_id)
+        print(comment_to_update)
+
+        result = db.comments.update_one(
             {'_id': ObjectId(comment_id)},
             {'$set': {'comment': comment_to_update}}
         )
@@ -226,9 +223,3 @@ def register_diary_routes(app):
 #     def delete_diary(diary_id):
 #         result = db.diaries.delete_one({'_id': ObjectId(diary_id)})
 #         return jsonify({"message": "일기 삭제 완료"})
-    
-# 일기 좋아요
-
-
-#일기 좋아요 취소
-

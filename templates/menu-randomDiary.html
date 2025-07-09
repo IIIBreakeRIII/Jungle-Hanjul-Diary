@@ -32,7 +32,7 @@
           {% if comments %}
             {% for comment in comments %}
               {% if comment.is_mine %}
-                <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))] flex items-center justify-between">
+                <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))] flex items-center justify-between" data-comment-id="{{ comment._id }}">
                   <div class="diary-reply-div flex items-center">
                     <span class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">{{ comment.comment }}</span>
                     <input class="diary-reply-edit-input flex-1 bg-[rgba(var(--bg-orange))] hidden shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]" maxlength="30" value=""/>
@@ -45,7 +45,7 @@
                   </div>
                 </div>
               {% else %}
-                <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))]">
+                <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))]" data-comment-id="{{ comment._id }}">
                   <p class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">
                     {{ comment.comment }}
                 </div>
@@ -72,31 +72,38 @@
 
     <script>
       document.addEventListener('DOMContentLoaded', function() {
+        // 이벤트 위임을 이용해서 .menu-randomDiary-main-div 요소에 이벤트 핸들러 등록하기
+        const diaryCommentsContainer = document.querySelector('.menu-randomDiary-main-div');
 
-        // 수정된 댓글 저장 이벤트
-        const commentSaveBtn = document.querySelector('.diary-reply-save-button');
-        commentSaveBtn.addEventListener('click', async () => {
-          // 수정된 댓글 내용
-          const comment = document.querySelector('.diary-reply-edit-input').value;
-          const diary_id = '{{ diary._id }}';
-          const comment_id = '{{ comment._id }}';
+        diaryCommentsContainer.addEventListener('click', async (event) => {
+          if (event.target.matches('.diary-reply-save-button')) {
+            const parent = event.target.closest('.diary-reply-div');
+            const text = parent.querySelector('.diary-reply-text');
+            const input = parent.querySelector('.diary-reply-edit-input');
+            const editBtn = parent.querySelector('.diary-reply-edit-button');
+            const revealMine = parent.querySelector('.reply-reveal-my-text');
 
-          console.log(comment_id)
+            // 서버에 댓글 업데이트 요청
+            const diary_id = '{{ diary._id }}';
+            const comment_id = parent.dataset.commentId;
+            const comment = input.value;
 
-          const response = await fetch(`/diary/${diary_id}/comments/${comment_id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              diary_id: diary_id,
-              comment_id: comment_id,
-              comment: comment
-            })
-          });
+            const response = await fetch(`/diary/${diary_id}/comments/${comment_id}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                diary_id: diary_id,
+                comment_id: comment_id,
+                comment: comment
+              })
+            });
 
-          const data = await response.json();
-          console.log(data);
+            const data = await response.json();
+            console.log(data);
+
+          }
         })
 
         document.querySelectorAll('.diary-reply-edit-button').forEach(function(editBtn) {
