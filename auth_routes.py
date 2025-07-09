@@ -73,36 +73,47 @@ def handle_token_validation(view_func):
 # 토큰 예외 관련 메시지 처리 함수
 def _handle_session_expired():
   preferred = request.accept_mimetypes.best_match(["application/json", "text/html"])
+
   if request.is_json or preferred == "application/json":
-    return jsonify({
+    response = jsonify({
       "msg": "세션이 만료되었습니다. 다시 로그인해주세요.",
-      "code": "TOKEN_EXPIRED"}), 401
+      "code": "TOKEN_EXPIRED"
+    }), 401
+    unset_jwt_cookies(response[0])
+    return response
   else:
-    return render_template_string(
+    response = make_response(render_template_string(
       """
       <script>
         alert("세션이 만료되었습니다. 다시 로그인해주세요.");
         window.location.href = "/";
       </script>
       """
-    )
+    ))
+    unset_jwt_cookies(response)
+    return response
 
 def _handle_not_logged_in():
   preferred = request.accept_mimetypes.best_match(["application/json", "text/html"])
+
   if request.is_json or preferred == "application/json":
-    return jsonify({
+    response = jsonify({
       "msg": "로그인이 필요한 서비스입니다.",
-      "code": "NOT_LOGGED_IN"}), 401
+      "code": "NOT_LOGGED_IN"
+    }), 401
+    unset_jwt_cookies(response[0])
+    return response
   else:
-    return render_template_string(
+    response = make_response(render_template_string(
       """
       <script>
         alert("로그인이 필요한 서비스입니다.");
         window.location.href = "/";
       </script>
       """
-    )
-
+    ))
+    unset_jwt_cookies(response)
+    return response
 
 
 # 사용자 인증 관련 코드 작성
