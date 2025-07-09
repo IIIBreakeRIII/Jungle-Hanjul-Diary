@@ -68,7 +68,7 @@
           <div class="diary-add-reply mt-[40px] flex items-center">
             <input type="text" placeholder="댓글 달기" maxlength="30" class="diary-add-reply-input flex-1 bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]"/>
             <button class="diary-add-reply-button text-[rgba(var(--black))] ml-[12px] px-[20px] py-2 shadow-div-parent border rounded-[8px] hover:border-primary">
-              게시하기
+              입력
             </button>
           </div>
           <button class="diary-reply-random-button mt-[40px] py-2 shadow-div-parent border rounded-[12px] hover:border-primary">다음 일기 보기</button>
@@ -193,7 +193,7 @@
           const commentEl = document.querySelector('.diary-add-reply-input');
           const comment = commentEl.value;
 
-          if (!comment || comment === '') {
+          if (!comment || comment.trim() === '') {
             alert('댓글을 입력해주세요!');
             commentEl.focus();
             return;

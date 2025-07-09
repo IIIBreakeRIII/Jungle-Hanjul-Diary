@@ -79,7 +79,7 @@
         const editDiaryButton = document.querySelector('.diary-edit-button');
 
         editDiaryButton.addEventListener('click', async () => {
-          const original_content = '{{ diary.content }}';
+          const original_content = `{{ diary.content }}`;
           const content = document.querySelector('.diary-edit-textarea').value;
           const is_private = document.querySelector('.edit-check-private-checkbox').checked;
           const diary_id = '{{ diary._id }}';
