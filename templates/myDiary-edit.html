@@ -48,8 +48,10 @@
 
         editDiaryButton.addEventListener('click', async () => {
           const content = document.querySelector('.diary-edit-textarea').value;
-          const isPrivate = document.querySelector('.edit-check-private-checkbox').checked;
+          const is_private = document.querySelector('.edit-check-private-checkbox').checked;
           const diary_id = '{{ diary._id }}';
+
+          console.log('수정할 일기 정보', content, is_private, diary_id)
 
           const response = await fetch(`/api/diary/${diary_id}/update`, {
             method: 'PUT',
@@ -58,7 +60,7 @@
             },
             body: JSON.stringify({
               content,
-              isPrivate
+              is_private
             })
           });
 

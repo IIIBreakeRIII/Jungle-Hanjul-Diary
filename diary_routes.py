@@ -53,7 +53,35 @@ def register_diary_routes(app):
             return jsonify({
                 'message': '일기 저장 중 오류가 발생했습니다.',
             })
-    
+
+
+    @app.route('/diary/<diary_id>', methods=['GET'])
+    @handle_token_validation
+    def show_diary(diary_id):
+        try:
+            user_id = get_jwt_identity()  # 로그인한 사용자
+            diary = db.diaries.find_one({'_id': ObjectId(diary_id)})
+            diary['_id'] = str(diary['_id'])
+            comments = list(db.comments.find({'diary_id': diary['_id']}))
+
+            if not comments:
+                print('댓글이 존재하지 않습니다.')
+                return render_template('menu-viewDiary.html', diary=diary, comments=[])
+
+            for comment in comments:
+                comment['_id'] = str(comment['_id'])
+                if comment['user_id'] == user_id:
+                    comment['is_mine'] = True
+                else:
+                    comment['is_mine'] = False
+
+            return render_template('menu-viewDiary.html', diary=diary, comments=comments)
+
+        except Exception as e:
+            return render_template('menu-viewDiary.html', diary=None, comments=[])
+
+
+
     # 랜덤 일기 보기 페이지(랜덤 일기 조회)
     @app.route('/diary/random', methods=['GET'])
     @handle_token_validation
@@ -97,24 +125,32 @@ def register_diary_routes(app):
     @app.route('/diary/<diary_id>/comments', methods=['POST'])
     @handle_token_validation
     def create_comment(diary_id):
-        # TODO : try~except 로 수정할 것
-        data = request.json
-        new_comment = data.get("comment")
-        user_id = get_jwt_identity()
-        created_at = datetime.now(UTC)
+        try:
+            # TODO : try~except 로 수정할 것
+            data = request.json
+            new_comment = data.get("comment")
+            user_id = get_jwt_identity()
+            created_at = datetime.now(UTC)
 
-        comment = {
-            "diary_id": diary_id,
-            "user_id": user_id,
-            "comment": new_comment,
-            "created_at": created_at
-        }
+            comment = {
+                "diary_id": diary_id,
+                "user_id": user_id,
+                "comment": new_comment,
+                "created_at": created_at
+            }
 
-        print(comment)
+            print(comment)
 
-        db.comments.insert_one(comment)
+            db.comments.insert_one(comment)
 
-        return jsonify({"message": "댓글 작성에 성공했습니다."})
+            return jsonify({
+                "message": "댓글 작성에 성공했습니다.",
+                "redirect": url_for('show_diary', diary_id=diary_id)
+            })
+        except Exception as e:
+            return jsonify({
+                "message": "댓글 작성 중 오류가 발생했습니다."
+            }), 500
 
 
     # 내가 쓴 글 페이지
@@ -156,7 +192,7 @@ def register_diary_routes(app):
 
 
     # 내가 쓴 글 페이지 (내가 작성한 일기 상세 조회)
-    @app.route('/diary/<diary_id>', methods=['GET'])
+    @app.route('/diary/me/<diary_id>', methods=['GET'])
     def edit_diary(diary_id):
         diary = db.diaries.find_one({'_id': ObjectId(diary_id)})
         diary['_id'] = str(diary['_id'])
@@ -195,9 +231,7 @@ def register_diary_routes(app):
     def delete_diary(diary_id):
         result = db.diaries.delete_one({'_id': ObjectId(diary_id)})
 
-        return jsonify({
-            "message": "일기가 삭제되었습니다."
-        })
+        return jsonify({"message": "일기가 삭제되었습니다."})
         # return render_template('myDiary-edit.html', message="일기 삭제 완료")
 
    # 랜덤 일기에 대해 내가 작성한 댓글 수정
@@ -214,17 +248,23 @@ def register_diary_routes(app):
             {'$set': {'comment': comment_to_update}}
         )
         if result.modified_count == 1:
-            return jsonify({"message": "수정 완료"})
+            return jsonify({
+                "message": "댓글 수정이 완료되었습니다.",
+                "redirect": url_for('show_diary', diary_id=diary_id)
+            })
         else:
-            return jsonify({"message": "수정 실패"})
-        
-#     # 댓글 삭제
-#     @app.route('/diary/<diary_id>', methods=['DELETE'])
-#     def delete_diary(diary_id):
-#         result = db.diaries.delete_one({'_id': ObjectId(diary_id)})
-#         return jsonify({"message": "일기 삭제 완료"})
+            return jsonify({"message": "댓글 수정에 실패했습니다."})
 
-    # 일기 좋아요 API (SSR)
+    # 내가 작성한 댓글 삭제
+    @app.route('/diary/<diary_id>/comments/<comment_id>', methods=['DELETE'])
+    def delete_diary_comment(diary_id, comment_id):
+        result = db.comments.delete_one({'_id': ObjectId(comment_id)})
+        return jsonify({
+            "message": "댓글 삭제에 성공했습니다.",
+            "redirect": url_for('show_diary', diary_id=diary_id)
+        })
+      
+    # 일기 좋아요 기능 구현
     @app.route('/api/diary/<diary_id>/like', methods=['POST'])
     @handle_token_validation
     def like_diary(diary_id):
@@ -250,3 +290,4 @@ def register_diary_routes(app):
             return jsonify({'message': '좋아요가 반영되었습니다.', 'like_count': new_like_count})
         except Exception as e:
             return jsonify({'message': '좋아요 처리 중 오류가 발생했습니다.'}), 500
+          
