@@ -1,4 +1,4 @@
-from flask import request, jsonify, render_template, redirect
+from flask import request, jsonify, render_template, redirect, url_for
 from db import db
 from bson import ObjectId
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
@@ -138,42 +138,30 @@ def register_diary_routes(app):
             diary['_id'] = str(diary['_id'])
 
         return render_template('menu-myDiary.html',my_diaries=my_diaries)
-
-    # 내가 쓴 글 페이지(내가 작성한 일기 목록 조회)
-    @app.route('/api/diaries/me', methods=['GET'])
-    @handle_token_validation
-    def get_my_diaries():
-        # 현재 로그인한 사용자 정보를 쿠키의 토큰에서 가져오기
-        user_id = get_jwt_identity()
-
-        # 로그인한 유저가 작성한 일기만 조회
-        my_diaries = list(db.diaries.find({"user_id": user_id}))
-
-        print(my_diaries)
-
-        # diary_id = request.args.get('diary_id')
-        # diaries = list(db.diaries.find({"diary_id": diary_id}))
-        # for diary in diaries:
-        #     diary['_id'] = str(diary['_id'])
-        return jsonify({"message": 'test'})
-        # return render_template('menu-myDiary.html', diaries=diaries)
     
     # 내가 작성한 일기 검색
-    @app.route('/diary/search', methods=['GET'])
+    @app.route('/api/diary/search', methods=['GET'])
+    @handle_token_validation
     def search_diary():
-        diary_id = request.args.get('diary_id')
-        keyword = request.args.get('keyword')
+        user_id = get_jwt_identity()
+        keyword = request.args.get('keyword', '')
+
+        print(user_id, keyword)
+
+        if not keyword:
+            return redirect(url_for('show_my_diaries_page'))
 
         diaries = list(db.diaries.find({
-            "diary_id": diary_id,
-            "content": { "$regex": keyword, "$options": "i"}
+            "user_id": user_id,
+            "content": {"$regex": keyword, "$options": "i"}
         }))
+
         for diary in diaries:
             diary['_id'] = str(diary['_id'])
-        #return jsonify({"data": diaries})
-        return render_template('menu-myDiary.html', diaries=diaries)
-    
-############################################################
+
+        return render_template('menu-myDiary.html', my_diaries=diaries)
+
+    ############################################################
 
     # 내가 쓴 글 페이지(내가 작성한 일기 상세 조회)
     @app.route('/diary/<diary_id>', methods=['GET'])
