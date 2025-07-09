@@ -66,7 +66,6 @@ def handle_token_validation(view_func):
     # 그 밖의 에러 메시지
     except Exception as e:
       print("JWT Exception:", type(e), str(e))
-      return _handle_not_logged_in()
 
   return wrapped
 
