@@ -95,9 +95,30 @@
           });
         });
 
+        // 다음 일기 보기 버튼 이벤트
         document.querySelector('.diary-reply-random-button').addEventListener('click', function() {
           window.location.href = '/diary/random';
-        })
+        });
+
+        // 댓글 게시하기 버튼 이벤트
+        document.querySelector('.diary-add-reply-button').addEventListener('click', async () => {
+          const diary_id = '{{ diary._id }}';
+          const comment = document.querySelector('.diary-add-reply-input').value;
+
+          const response = await fetch(`/diary/${diary_id}/comments`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              diary_id: diary_id,
+              comment: comment
+            })
+          });
+
+          const data = await response.json();
+          console.log(data);
+        });
       });
     </script>
   </body>

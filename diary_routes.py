@@ -75,21 +75,27 @@ def register_diary_routes(app):
         return render_template('menu-randomDiary.html', diary=diary)
     
     # 댓글 작성(상대방의 일기에 댓글 작성)
-    @app.route('/diary/<post_id>/comments', methods=['POST'])
-    def create_comment(post_id): #post_id는 일기 "_id"
+    @app.route('/diary/<diary_id>/comments', methods=['POST'])
+    @handle_token_validation
+    def create_comment(diary_id):
+        # TODO : try~except 로 수정할 것
         data = request.json
-        name = data.get("name")  
         new_comment = data.get("comment")
-        diary_id = data.get("diary_id")  # 댓글 작성자 ID
+        user_id = get_jwt_identity()
+        created_at = datetime.now(UTC)
+
         comment = {
-            "post_id": post_id,  # 일기 "_id"
             "diary_id": diary_id,
-            "name": name,
-            "comment": new_comment
+            "user_id": user_id,
+            "comment": new_comment,
+            "created_at": created_at
         }
+
+        print(comment)
+
         db.comments.insert_one(comment)
-        #return jsonify({"message": "댓글 작성 완료"})
-        return render_template('menu-randomDiary.html', message="댓글 작성 완료")
+
+        return jsonify({"message": "댓글 작성에 성공했습니다."})
 
     # 댓글 목록 조회(3개만)
     @app.route('/diary/<post_id>/comments/random', methods=['GET'])
