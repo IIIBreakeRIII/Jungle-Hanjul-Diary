@@ -58,13 +58,12 @@ def register_diary_routes(app):
     @app.route('/diary/random', methods=['GET'])
     @handle_token_validation
     def get_random_diary():
+        user_id = get_jwt_identity() # 로그인한 사용자
+
         random_diaries = list(db.diaries.aggregate([
             {"$match": {"is_private": False}},
             { '$sample': { 'size': 1 } }
             ]))
-
-        print('랜덤 다이어리')
-        print(random_diaries)
 
         if not random_diaries:
             return render_template('menu-randomDiary.html', diary=None, message="공개된 일기가 없습니다.")
@@ -72,7 +71,16 @@ def register_diary_routes(app):
         diary = random_diaries[0]
         diary['_id'] = str(diary['_id'])
 
-        return render_template('menu-randomDiary.html', diary=diary)
+        comments = list(db.comments.find({'diary_id': diary['_id']}))
+
+        # comments 안의 각 comment 마다 user_id 와 작성자 id 가 동일한지 체크하기
+        for comment in comments:
+            if comment['user_id'] == user_id:
+                comment['is_mine'] = True
+
+        print(comments)
+
+        return render_template('menu-randomDiary.html', diary=diary, comments=comments)
     
     # 댓글 작성(상대방의 일기에 댓글 작성)
     @app.route('/diary/<diary_id>/comments', methods=['POST'])
@@ -96,36 +104,6 @@ def register_diary_routes(app):
         db.comments.insert_one(comment)
 
         return jsonify({"message": "댓글 작성에 성공했습니다."})
-
-    # 댓글 목록 조회(3개만)
-    @app.route('/diary/<post_id>/comments/random', methods=['GET'])
-    def get_comments(post_id):
-        diary = db.diaries.find_one({'_id': ObjectId(post_id)})
-        if not diary:
-            return render_template('menu-randomDiary.html', diary=None, message="일기를 찾을 수 없습니다.")
-        diary['_id'] = str(diary['_id'])
-
-        comments = list(db.comments.aggregate([
-            {"$match": {"post_id": post_id}},
-            { "$sample": { "size": 3 }}
-            ]))
-        for comment in comments:
-            comment['_id'] = str(comment['_id'])
-
-            
-        return render_template('menu-randomDiary.html', diary=diary, comments=comments)
-
-    # # 댓글 목록 조회(전체)
-    # @app.route('/diary/<post_id>/comments', methods=['GET'])
-    # def get_comments(post_id):
-    #     comments = list(db.comments.aggregate([ {"$match": {"post_id": post_id}} ]))
-    #     for comment in comments:
-    #         comment['_id'] = str(comment['_id'])
-    #     return jsonify({'comments': comments})
-    
-    
-    
-
 
 
 ############################################################
