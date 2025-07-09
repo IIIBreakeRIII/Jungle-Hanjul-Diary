@@ -218,8 +218,9 @@ def register_diary_routes(app):
         else:
             return jsonify({"message": "수정 실패"})
         
-#     # 댓글 삭제
-#     @app.route('/diary/<diary_id>', methods=['DELETE'])
-#     def delete_diary(diary_id):
-#         result = db.diaries.delete_one({'_id': ObjectId(diary_id)})
-#         return jsonify({"message": "일기 삭제 완료"})
+    # 내가 작성한 댓글 삭제
+    @app.route('/diary/<diary_id>/comments/<comment_id>', methods=['DELETE'])
+    def delete_diary_comment(diary_id, comment_id):
+        result = db.comments.delete_one({'_id': ObjectId(comment_id)})
+        return jsonify({"message": "댓글 삭제에 성공했습니다."})
+
