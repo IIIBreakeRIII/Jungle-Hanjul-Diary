@@ -25,7 +25,7 @@
             <br>
             <span class="text-[14px] text-[rgba(var(--gray))] font-[100]">(50자 제한)</span>
           </div>
-          <textarea placeholder="일기를 50자 이내로 작성하세요." class="write-diary-textarea bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" rows="3" maxlength="50"></textarea>
+          <textarea placeholder="일기를 50자 이내로 작성하세요." class="write-diary-textarea bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" rows="3"></textarea>
           <button class="create-diary-button mt-[8px] py-2 shadow-div-parent border rounded-[12px] hover:border-primary">게시하기</button>
           <div class="flex items-center gap-3 mt-2">
             <label class="flex items-center cursor-pointer select-none">
@@ -83,8 +83,15 @@
           window.location.href = '/diary/main';
         }
       }
+    </script>
+    <script type="module">
+      import { setupGraphemeLimiter } from "{{ url_for('static', filename='js/emoji-segmenter.js') }}";
 
-
+      setupGraphemeLimiter({
+        inputSelector: '.write-diary-textarea',
+        maxChars: 50,
+        locale: 'ko'
+      });
     </script>
   </body>
 </html>

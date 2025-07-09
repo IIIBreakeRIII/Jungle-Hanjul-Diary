@@ -25,7 +25,7 @@
             <br>
             <span class="text-[14px] text-[rgba(var(--gray))] font-[100]">(50자 제한)</span>
           </div>
-          <textarea placeholder="일기를 50자 이내로 작성하세요." class="diary-edit-textarea bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" rows="3" maxlength="50">{{ diary.content }}</textarea>
+          <textarea placeholder="일기를 50자 이내로 작성하세요." class="diary-edit-textarea bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" rows="3">{{ diary.content }}</textarea>
 					<div class="flex items-center gap-8">
 						<button class="diary-edit-button flex-1 mt-[8px] py-2 shadow-div-parent border rounded-[12px] hover:border-primary">수정하기</button>
 						<button class="diary-delete-button flex-1 mt-[8px] py-2 text-[rgba(var(--red))] shadow-div-parent border rounded-[12px] hover:border-warn">삭제하기</button>
@@ -71,6 +71,13 @@
                 </p>
               </div>
             {% endif %}
+        </div>
+        <div class="mx-[90px] max-[720px]:mx-[40px]">
+          <a href="{{ url_for('show_main_page') }}">
+            <button class="mt-[20px] py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[200] border rounded-[12px] hover:border-primary w-full">
+              메뉴화면으로 돌아가기
+            </button>
+          </a>
         </div>
       </section>
     </main>
@@ -250,5 +257,14 @@
       });
 
     </script>
+    <script type="module">
+      import { setupGraphemeLimiter } from "{{ url_for('static', filename='js/emoji-segmenter.js') }}";
+
+      setupGraphemeLimiter({
+        inputSelector: '.diary-edit-textarea',
+        maxChars: 50,
+        locale: 'ko'
+      });
+    </script>    
   </body>
 </html>
