@@ -53,25 +53,25 @@ def register_diary_routes(app):
             return jsonify({
                 'message': '일기 저장 중 오류가 발생했습니다.',
             })
-
-        #return jsonify({"message": "일기 저장 완료"})
-        # return render_template('menu-main.html', message="일기 저장 완료")
-    
-############################################################
     
     # 랜덤 일기 보기 페이지(랜덤 일기 조회)
     @app.route('/diary/random', methods=['GET'])
     @handle_token_validation
     def get_random_diary():
         random_diaries = list(db.diaries.aggregate([
-            {"$match": {"is_public": True}},
+            {"$match": {"is_private": False}},
             { '$sample': { 'size': 1 } }
             ]))
+
+        print('랜덤 다이어리')
+        print(random_diaries)
+
         if not random_diaries:
             return render_template('menu-randomDiary.html', diary=None, message="공개된 일기가 없습니다.")
+
         diary = random_diaries[0]
-        for diary in random_diaries:
-            diary['_id'] = str(diary['_id'])
+        diary['_id'] = str(diary['_id'])
+
         return render_template('menu-randomDiary.html', diary=diary)
     
     # 댓글 작성(상대방의 일기에 댓글 작성)
