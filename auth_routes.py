@@ -199,12 +199,24 @@ def register_auth_routes(app):
 
   @app.route('/api/logout', methods=['POST'])
   def logout():
-    response = redirect(url_for('home'))
+    try:
+      response = jsonify({
+        "message": "로그아웃 되었습니다.",
+        "redirect": url_for('home'),
+      })
 
-    # 쿠키에서 액세스 토큰 & 리프레시 토큰을 모두 제거
-    unset_jwt_cookies(response)
-    return response
+      # 쿠키에서 액세스 토큰 & 리프레시 토큰을 모두 제거
+      unset_jwt_cookies(response)
+      return response
+
+    except Exception as e:
+      return jsonify({
+        "message": "로그아웃 중 에러가 발생했습니다.",
+        "error": str(e)
+      })
+
   
   @app.route('/api/account_setting', methods=['GET'])
+  @handle_token_validation
   def account_setting():
     return render_template('menu-account.html')
