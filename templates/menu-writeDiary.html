@@ -57,6 +57,14 @@
 
       // 일기 저장 API
       async function postDiary() {
+        // 내용을 입력하지 않으면 사용자에게 경고 띄우기
+        const textareaEl = document.querySelector('.write-diary-textarea');
+        if (textareaEl.value === '') {
+          alert('내용을 입력해주세요!');
+          textareaEl.focus();
+          return;
+        }
+
         const response = await fetch('/api/diary/create', {
           method: 'POST',
           headers: {
