@@ -25,14 +25,14 @@
             <br>
             <span class="text-[14px] text-[rgba(var(--gray))] font-[100]">(50자 제한)</span>
           </div>
-          <textarea placeholder="일기를 50자 이내로 작성하세요." class="diary-edit-textarea bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" rows="3" maxlength="50"></textarea>
+          <textarea placeholder="일기를 50자 이내로 작성하세요." class="diary-edit-textarea bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[12px] px-3 py-2 focus:outline-[rgba(var(--primary))]" rows="3" maxlength="50">{{ diary.content }}</textarea>
 					<div class="flex items-center gap-8">
 						<button class="diary-edit-button flex-1 mt-[8px] py-2 shadow-div-parent border rounded-[12px] hover:border-primary">수정하기</button>
 						<button class="diary-delete-button flex-1 mt-[8px] py-2 text-[rgba(var(--red))] shadow-div-parent border rounded-[12px] hover:border-warn">삭제하기</button>
 					</div>
           <div class="flex items-center gap-3 mt-2">
             <label class="flex items-center cursor-pointer select-none">
-              <input type="checkbox" name="private" value="private" class="edit-check-private-checkbox peer sr-only">
+              <input type="checkbox" name="private" value="private" class="edit-check-private-checkbox peer sr-only" {% if diary.is_private %}checked{% endif %}>
               <span class="w-[20px] h-[20px] rounded-full shadow-div-parent border-1 border-[rgba(var(--primary))] flex items-center justify-center mr-[8px]
                 peer-checked:after:w-[16px] peer-checked:after:h-[16px] peer-checked:after:rounded-full peer-checked:after:bg-[rgba(var(--primary))]"></span>
               <span class="text-[12px] font-[100] text-[rgba(var(--gray))]">이 일기는 저만 보고 싶어요.</span>
@@ -41,5 +41,57 @@
         </div>
       </section>
     </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const editDiaryButton = document.querySelector('.diary-edit-button');
+
+        editDiaryButton.addEventListener('click', async () => {
+          const content = document.querySelector('.diary-edit-textarea').value;
+          const isPrivate = document.querySelector('.edit-check-private-checkbox').checked;
+          const diary_id = '{{ diary._id }}';
+
+          const response = await fetch(`/api/diary/${diary_id}/update`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              content,
+              isPrivate
+            })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message);
+            window.location.href = `/diaries/me`;
+          } else {
+            alert(data.message);
+          }
+        })
+      })
+
+      const deleteDiaryButton = document.querySelector('.diary-delete-button');
+      deleteDiaryButton.addEventListener('click', async () => {
+        const confirmed = confirm('정말 삭제하시겠습니까?');
+        if (!confirmed) return;
+
+        const diary_id = '{{ diary._id }}';
+
+        const response = await fetch(`/api/diary/${diary_id}/delete`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message);
+          window.location.href = `/diaries/me`;
+        } else {
+          alert(data.message);
+        }
+      })
+    </script>
   </body>
-</html
+</html>

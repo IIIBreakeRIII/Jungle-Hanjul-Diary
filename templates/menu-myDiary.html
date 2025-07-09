@@ -21,36 +21,44 @@
           <div class="pt-[20px] pb-[20px] text-[20px] font-[500] text-center">
             <span>내가 쓴 일기</span>
           </div>
-          <div class="diary-search-div mt-[20px] flex items-center">
+          <form id="searchForm" action="{{ url_for('search_diary') }}" method="GET" class="diary-search-div mt-[20px] flex items-center">
             <input type="text" placeholder="검색할 일기" maxlength="30" class="diary-search-input flex-1 bg-[rgba(var(--bg-orange))] shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]"/>
-            <button class="diary-search-button text-[rgba(var(--black))] ml-[12px] px-[20px] max-[540px]:px-[12px] py-2 shadow-div-parent border rounded-[8px] hover:border-primary">
+            <button type="submit" class="diary-search-button text-[rgba(var(--black))] ml-[12px] px-[20px] max-[540px]:px-[12px] py-2 shadow-div-parent border rounded-[8px] hover:border-primary">
               검색
             </button>
-          </div>
+          </form>
           <div class="my-diary-list flex flex-col items-center w-full max-w-[500px] mx-auto">
-            <a href="{{ url_for('temp_myDiary_edit') }}" class="w-full">
-              <button class="my-diary-button w-full text-[16px] font-[100] text-[rgba(var(--black))] mt-[20px] py-[12px] px-[12px] shadow-div-parent border rounded-[8px] hover:border-primary truncate overflow-hidden whitespace-nowrap">
-                This is example diary for test. It is made by hard coding. (Sample Sample Sample)
-              </button>
-            </a>
-            <a href="{{ url_for('temp_myDiary_edit') }}" class="w-full">
-              <button class="my-diary-button w-full text-[16px] font-[100] text-[rgba(var(--black))] mt-[20px] py-[12px] px-[12px] shadow-div-parent border rounded-[8px] hover:border-primary truncate overflow-hidden whitespace-nowrap">
-                This is example diary for test. It is made by hard coding. (Sample Sample Sample)
-              </button>
-            </a>
-            <a href="{{ url_for('temp_myDiary_edit') }}" class="w-full">
-              <button class="my-diary-button w-full text-[16px] font-[100] text-[rgba(var(--black))] mt-[20px] py-[12px] px-[12px] shadow-div-parent border rounded-[8px] hover:border-primary truncate overflow-hidden whitespace-nowrap">
-                This is example diary for test. It is made by hard coding. (Sample Sample Sample)
-              </button>
-            </a>
-            <a href="{{ url_for('temp_myDiary_edit') }}" class="w-full">
-              <button class="my-diary-button w-full text-[16px] font-[100] text-[rgba(var(--black))] mt-[20px] py-[12px] px-[12px] shadow-div-parent border rounded-[8px] hover:border-primary truncate overflow-hidden whitespace-nowrap">
-                This is example diary for test. It is made by hard coding. (Sample Sample Sample)
-              </button>
-            </a>
+            {% if my_diaries %}
+              {% for diary in my_diaries %}
+                <a href="{{ url_for('edit_diary', diary_id=diary._id) }}" class="w-full">
+                  <button class="my-diary-button w-full text-[16px] font-[100] text-[rgba(var(--black))] mt-[20px] py-[12px] px-[12px] shadow-div-parent border rounded-[8px] hover:border-primary truncate overflow-hidden whitespace-nowrap">
+                    {{ diary.content }}
+                  </button>
+                </a>
+              {% endfor %}
+            {% else %}
+                <p class="mt-[20px] text-center text-gray-500">작성한 일기가 없습니다.</p>
+            {% endif %}
           </div>
         </div>
       </section>
     </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const searchForm = document.getElementById('searchForm');
+
+        searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // 폼의 기본 제출 동작을 막습니다
+
+            const keywordEl = document.querySelector('.diary-search-input');
+            const keyword = keywordEl.value;
+
+            // GET 요청으로 변경
+            window.location.href = `/api/diary/search?keyword=${encodeURIComponent(keyword)}`;
+        });
+    });
+
+    </script>
   </body>
-</html
+</html>

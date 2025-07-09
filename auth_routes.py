@@ -44,7 +44,7 @@ def handle_token_validation(view_func):
       except Exception as e:
         print("JWT Exception after ExpiredSignatureError:", type(e), str(e))
         # 리프레시 토큰도 만료된 경우 -> 다시 로그인 요청하기
-        return _handle_auth_fail()
+        return _handle_session_expired()
 
     except NoAuthorizationError:
       # 액세스 토큰이 아예 없는 경우에도 리프레시로 재발급 시도
@@ -61,32 +61,59 @@ def handle_token_validation(view_func):
       except Exception as e:
         print("JWT Exception after NoAuthorizationError:", type(e), str(e))
         # 리프레시 토큰도 없다면 NoAuthorizationError 발생: Missing cookie "refresh_token_cookie"
-        return _handle_auth_fail()
+        return _handle_not_logged_in()
 
     # 그 밖의 에러 메시지
     except Exception as e:
       print("JWT Exception:", type(e), str(e))
-      return _handle_auth_fail()
+      return _handle_not_logged_in()
 
   return wrapped
 
 # 토큰 예외 관련 메시지 처리 함수
-def _handle_auth_fail():
+def _handle_session_expired():
   preferred = request.accept_mimetypes.best_match(["application/json", "text/html"])
+
   if request.is_json or preferred == "application/json":
-    return jsonify({
+    response = jsonify({
       "msg": "세션이 만료되었습니다. 다시 로그인해주세요.",
-      "code": "TOKEN_EXPIRED"}), 401
+      "code": "TOKEN_EXPIRED"
+    }), 401
+    unset_jwt_cookies(response[0])
+    return response
   else:
-    return render_template_string(
+    response = make_response(render_template_string(
       """
       <script>
         alert("세션이 만료되었습니다. 다시 로그인해주세요.");
         window.location.href = "/";
       </script>
       """
-    )
+    ))
+    unset_jwt_cookies(response)
+    return response
 
+def _handle_not_logged_in():
+  preferred = request.accept_mimetypes.best_match(["application/json", "text/html"])
+
+  if request.is_json or preferred == "application/json":
+    response = jsonify({
+      "msg": "로그인이 필요한 서비스입니다.",
+      "code": "NOT_LOGGED_IN"
+    }), 401
+    unset_jwt_cookies(response[0])
+    return response
+  else:
+    response = make_response(render_template_string(
+      """
+      <script>
+        alert("로그인이 필요한 서비스입니다.");
+        window.location.href = "/";
+      </script>
+      """
+    ))
+    unset_jwt_cookies(response)
+    return response
 
 
 # 사용자 인증 관련 코드 작성
@@ -154,7 +181,7 @@ def register_auth_routes(app):
     refresh_token = create_refresh_token(identity=user_id)
 
     # 리다이렉션 URL 설정
-    redirect_url = url_for('signup_form')
+    redirect_url = url_for('show_main_page')
 
     # 응답 객체 생성
     response = jsonify({
