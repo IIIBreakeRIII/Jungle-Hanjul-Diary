@@ -225,7 +225,7 @@ def register_diary_routes(app):
         except Exception as e:
             return jsonify({"message": "오류가 발생했습니다."}), 500
 
-    # 내가 작성한 일기 삭제
+    # 내가 작성한 일기 삭print("======= Test =========")제
     @app.route('/api/diary/<diary_id>/delete', methods=['DELETE']) # 기존 DELETE를 사용했으나 교체
     @handle_token_validation
     def delete_diary(diary_id):
@@ -254,7 +254,7 @@ def register_diary_routes(app):
             })
         else:
             return jsonify({"message": "댓글 수정에 실패했습니다."})
-        
+
     # 내가 작성한 댓글 삭제
     @app.route('/diary/<diary_id>/comments/<comment_id>', methods=['DELETE'])
     def delete_diary_comment(diary_id, comment_id):
@@ -263,4 +263,31 @@ def register_diary_routes(app):
             "message": "댓글 삭제에 성공했습니다.",
             "redirect": url_for('show_diary', diary_id=diary_id)
         })
+      
+    # 일기 좋아요 기능 구현
+    @app.route('/api/diary/<diary_id>/like', methods=['POST'])
+    @handle_token_validation
+    def like_diary(diary_id):
+        try:
+            user_id = get_jwt_identity()
+            diary = db.diaries.find_one({'_id': ObjectId(diary_id)})
+            if not diary:
+                return jsonify({'message': '일기를 찾을 수 없습니다.'}), 404
 
+            liked_users = diary.get('liked_users', [])
+            if user_id in liked_users:
+                return jsonify({'message': '이미 좋아요를 누르셨습니다.', 'like_count': diary.get('like_count', 0)}), 400
+
+            # 좋아요 반영
+            new_like_count = diary.get('like_count', 0) + 1
+            db.diaries.update_one(
+                {'_id': ObjectId(diary_id)},
+                {
+                    '$set': {'like_count': new_like_count},
+                    '$push': {'liked_users': user_id}
+                }
+            )
+            return jsonify({'message': '좋아요가 반영되었습니다.', 'like_count': new_like_count})
+        except Exception as e:
+            return jsonify({'message': '좋아요 처리 중 오류가 발생했습니다.'}), 500
+          
