@@ -172,7 +172,15 @@
         // 댓글 게시하기 버튼 이벤트
         document.querySelector('.diary-add-reply-button').addEventListener('click', async () => {
           const diary_id = '{{ diary._id }}';
-          const comment = document.querySelector('.diary-add-reply-input').value;
+
+          const commentEl = document.querySelector('.diary-add-reply-input');
+          const comment = commentEl.value;
+
+          if (!comment || comment === '') {
+            alert('댓글을 입력해주세요!');
+            commentEl.focus();
+            return;
+          }
 
           const response = await fetch(`/diary/${diary_id}/comments`, {
             method: 'POST',
