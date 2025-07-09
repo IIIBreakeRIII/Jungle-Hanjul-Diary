@@ -6,6 +6,8 @@
 :root {
 	--primary: 244, 158, 65;
 	--black: 0, 0, 0;
+  --gray: 100, 100, 100;
+  --red: 255, 0, 0;
 	--bg-orange: 255, 245, 233;
 }
 
@@ -21,6 +23,12 @@
   }
   .hover\\:border-primary:hover {
     border-color: rgba(var(--primary));
+  }
+  .border-warn {
+    border-color: rgba(var(--red));
+  }
+  .hover\\:border-warn:hover {
+    border-color: rgba(var(--red));
   }
 }
 
@@ -40,4 +48,8 @@ button {
 	background-color: rgba(var(--bg-orange));
 	color: rgba(var(--primary));
 	border-radius: 12px;
+}
+
+textarea {
+  resize: none;
 }

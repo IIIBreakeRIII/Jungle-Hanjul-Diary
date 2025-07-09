@@ -27,8 +27,17 @@
             <p class="random-diary-text text-center">This is example diary for test. It is made by hard coding. (Sample Sample Sample)</p>
           </div>
           <p class="text-[16px] font-[300] mt-[20px] mb-[12px]">댓글</p>
-          <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))]">
-            <p class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">댓글입니다.</p>
+          <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))] flex items-center justify-between">
+            <div class="diary-reply-div flex items-center">
+              <span class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">댓글입니다.</span>
+              <input class="diary-reply-edit-input flex-1 bg-[rgba(var(--bg-orange))] hidden shadow-div-parent border rounded-[8px] px-3 py-2 focus:outline-[rgba(var(--primary))]" maxlength="30" value=""/>
+              <p class="reply-reveal-my-text ml-[8px] text-[10px] font-[100] text-[rgba(var(--gray))]">(내가 쓴 댓글)</p>
+            </div>
+            <div class="diary-reply-edit-div flex items-center">
+              <button class="diary-reply-edit-button ml-2 px-3 py-1 text-[10px] border rounded-[6px] shadow-div-parent hover:border-primary">수정</button>
+              <button class="diary-reply-save-button ml-2 px-3 py-1 text-[10px] border rounded-[6px] shadow-div-parent hover:border-primary hidden">저장</button>
+              <button class="diary-reply-delete-button ml-[12px] px-3 py-1 text-[10px] text-[rgba(var(--red))] border rounded-[6px] shadow-div-parent hover:border-warn">삭제</button>
+            </div>
           </div>
           <div class="diary-reply-div py-[12px] border-b border-b-[rgba(var(--primary))]">
             <p class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">댓글입니다.</p>
@@ -46,5 +55,44 @@
         </div>
       </section>
     </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.diary-reply-edit-button').forEach(function(editBtn) {
+          editBtn.addEventListener('click', function() {
+            const parent = editBtn.closest('.diary-reply-div');
+            const text = parent.querySelector('.diary-reply-text');
+            const input = parent.querySelector('.diary-reply-edit-input');
+            const saveBtn = parent.querySelector('.diary-reply-save-button');
+            const revealMine = parent.querySelector('.reply-reveal-my-text');
+            // 텍스트 숨기고 input 보이기
+            text.classList.add('hidden');
+            input.classList.remove('hidden');
+            input.value = text.textContent.trim();
+            editBtn.classList.add('hidden');
+            saveBtn.classList.remove('hidden');
+            revealMine.classList.add('hidden')
+            input.focus();
+          });
+        });
+
+        document.querySelectorAll('.diary-reply-save-button').forEach(function(saveBtn) {
+          saveBtn.addEventListener('click', function() {
+            const parent = saveBtn.closest('.diary-reply-div');
+            const text = parent.querySelector('.diary-reply-text');
+            const input = parent.querySelector('.diary-reply-edit-input');
+            const editBtn = parent.querySelector('.diary-reply-edit-button');
+            const revealMine = parent.querySelector('.reply-reveal-my-text');
+            // input 값으로 텍스트 변경
+            text.textContent = input.value;
+            text.classList.remove('hidden');
+            input.classList.add('hidden');
+            saveBtn.classList.add('hidden');
+            editBtn.classList.remove('hidden');
+            revealMine.classList.remove('hidden');
+          });
+        });
+      });
+    </script>
   </body>
 </html>
