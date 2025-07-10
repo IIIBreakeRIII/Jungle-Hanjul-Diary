@@ -4,7 +4,7 @@ from flask import request, jsonify, render_template, redirect, url_for
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
 from db import db
 from bson import ObjectId
-from datetime import datetime, UTC
+from datetime import datetime, UTC, timezone, timedelta
 
 from auth_routes import handle_token_validation
 
@@ -22,6 +22,13 @@ def register_my_diary_routes(app):
 
     for diary in my_diaries:
       diary['_id'] = str(diary['_id'])
+      if isinstance(diary['created_at'], str):
+        diary['created_at'] = datetime.fromisoformat(diary['created_at'].replace('Z', '+00:00'))
+        kr_time = diary['created_at'].astimezone(timezone(timedelta(hours=9)))
+        diary['created_at'] = kr_time.strftime('%Y-%m-%d %H:%M:%S')
+      else:
+        diary['created_at'] = diary['created_at'].replace(tzinfo=UTC).astimezone(
+          timezone(timedelta(hours=9))).strftime('%Y-%m-%d %H:%M:%S')
 
     return render_template('menu-myDiary.html', my_diaries=my_diaries)
 
@@ -70,6 +77,8 @@ def register_my_diary_routes(app):
 
     for comment in comments:
       comment['_id'] = str(comment['_id'])
+      comment['created_at'] = comment['created_at'].replace(tzinfo=UTC).astimezone(
+        timezone(timedelta(hours=9))).strftime('%Y-%m-%d %H:%M:%S')
       if comment['user_id'] == user_id:
         comment['is_mine'] = True
       else:

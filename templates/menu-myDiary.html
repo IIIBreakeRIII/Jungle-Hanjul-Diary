@@ -31,8 +31,9 @@
             {% if my_diaries %}
               {% for diary in my_diaries %}
                 <a href="{{ url_for('edit_diary', diary_id=diary._id) }}" class="w-full">
-                  <button class="my-diary-button w-full text-[16px] font-[100] text-[rgba(var(--black))] mt-[20px] py-[12px] px-[12px] shadow-div-parent border rounded-[8px] hover:border-primary truncate overflow-hidden whitespace-nowrap">
+                  <button class="my-diary-button flex flex-col w-full text-[16px] font-[100] text-[rgba(var(--black))] mt-[20px] py-[12px] px-[12px] shadow-div-parent border rounded-[8px] hover:border-primary truncate overflow-hidden whitespace-nowrap">
                     {{ diary.content }}
+                    <span class="text-[12px]">({{ diary.created_at }})</span>
                   </button>
                 </a>
               {% endfor %}
