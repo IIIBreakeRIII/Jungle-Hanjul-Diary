@@ -2,7 +2,7 @@ from flask import request, jsonify, render_template, redirect, url_for
 from db import db
 from bson import ObjectId
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
-from datetime import datetime, UTC
+from datetime import datetime, UTC, timezone, timedelta
 from auth_routes import handle_token_validation
 
 
@@ -54,11 +54,21 @@ def register_diary_routes(app):
       diary['_id'] = str(diary['_id'])
       comments = list(db.comments.find({'diary_id': diary['_id']}))
 
+      if isinstance(diary['created_at'], str):
+        diary['created_at'] = datetime.fromisoformat(diary['created_at'].replace('Z', '+00:00'))
+        kr_time = diary['created_at'].astimezone(timezone(timedelta(hours=9)))
+        diary['created_at'] = kr_time.strftime('%Y-%m-%d %H:%M:%S')
+      else:
+        diary['created_at'] = diary['created_at'].replace(tzinfo=UTC).astimezone(
+          timezone(timedelta(hours=9))).strftime('%Y-%m-%d %H:%M:%S')
+
       if not comments:
         return render_template('menu-viewDiary.html', diary=diary, comments=[])
 
       for comment in comments:
         comment['_id'] = str(comment['_id'])
+        comment['created_at'] = comment['created_at'].replace(tzinfo=UTC).astimezone(timezone(timedelta(hours=9))).strftime('%Y-%m-%d %H:%M:%S')
+
         if comment['user_id'] == user_id:
             comment['is_mine'] = True
         else:
@@ -87,6 +97,14 @@ def register_diary_routes(app):
       diary = random_diaries[0]
       diary['_id'] = str(diary['_id'])
 
+      if isinstance(diary['created_at'], str):
+        diary['created_at'] = datetime.fromisoformat(diary['created_at'].replace('Z', '+00:00'))
+        kr_time = diary['created_at'].astimezone(timezone(timedelta(hours=9)))
+        diary['created_at'] = kr_time.strftime('%Y-%m-%d %H:%M:%S')
+      else:
+        diary['created_at'] = diary['created_at'].replace(tzinfo=UTC).astimezone(
+          timezone(timedelta(hours=9))).strftime('%Y-%m-%d %H:%M:%S')
+
       comments = list(db.comments.find({'diary_id': diary['_id']}))
 
       # comments 안의 각 comment 마다 user_id 와 작성자 id 가 동일한지 체크하기
@@ -95,6 +113,8 @@ def register_diary_routes(app):
 
       for comment in comments:
         comment['_id'] = str(comment['_id'])
+        comment['created_at'] = comment['created_at'].replace(tzinfo=UTC).astimezone(
+          timezone(timedelta(hours=9))).strftime('%Y-%m-%d %H:%M:%S')
         if comment['user_id'] == user_id:
             comment['is_mine'] = True
         else:
