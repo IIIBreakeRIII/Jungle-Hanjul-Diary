@@ -198,11 +198,14 @@ def register_auth_routes(app):
 
 
   @app.route('/api/logout', methods=['POST'])
+  @handle_token_validation
   def logout():
     try:
+      user_id = get_jwt_identity()
+
       response = jsonify({
-        "message": "로그아웃 되었습니다.",
-        "redirect": url_for('home'),
+        "result": "success",
+        "message": f"안녕히 가세요, {user_id}님!",
       })
 
       # 쿠키에서 액세스 토큰 & 리프레시 토큰을 모두 제거
@@ -211,6 +214,7 @@ def register_auth_routes(app):
 
     except Exception as e:
       return jsonify({
+        "result": "fail",
         "message": "로그아웃 중 에러가 발생했습니다.",
         "error": str(e)
       })

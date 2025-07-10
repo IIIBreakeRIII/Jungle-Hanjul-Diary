@@ -39,11 +39,9 @@
 							</div>
 						</div>
 					</div>
-					<a href="{{ url_for('show_main_page') }}" class="mt-[40px] w-full">
-						<button id="logoutBtn" class="py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[200] border rounded-[12px] hover:border-primary w-full">
-							로그아웃
-						</button>
-					</a>
+          <button id="logoutBtn" class="mt-[40px] w-full py-[16px] max-[720px]:py-[10px] shadow-div-parent text-[18px] font-[200] border rounded-[12px] hover:border-primary w-full">
+            로그아웃
+          </button>
 					<div class="text-[8px] font-[100] text-[rgba(var(--gray))] text-center mt-[40px]">
 						<span>서비스 버전 : 한줄 일기 v1.0</span>
 						<br>
@@ -75,9 +73,13 @@
           });
 
           const data = await response.json();
+          console.log(data);
 
-          if (data.redirect) {
-            window.location.href = data.redirect;
+          if (data.result === 'success') {
+            alert(data.message);
+            window.location.href = '/';
+          } else {
+            alert(data.message);
           }
         })
       })
