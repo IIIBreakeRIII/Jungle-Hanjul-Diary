@@ -94,13 +94,15 @@ def register_my_diary_routes(app):
         }}
       )
 
-      if result.modified_count == 1:
-        return jsonify({"message": "일기가 수정되었습니다."})
+      if result.matched_count == 0:
+        return jsonify({"message": "해당 일기를 찾을 수 없습니다."}), 404
+      elif result.modified_count == 0:
+        return jsonify({"message": "일기가 수정되었습니다. (내용이 이전과 동일합니다.)",})
       else:
-        return jsonify({"message": "일기 수정에 실패했습니다."})
+        return jsonify({"message": "일기가 수정되었습니다."})
 
     except Exception as e:
-      return jsonify({"message": "오류가 발생했습니다."}), 500
+      return jsonify({"message": "일기 수정 요청 중 오류가 발생했습니다."}), 500
 
   # 내가 작성한 일기 삭제 API
   @app.route('/api/diary/<diary_id>/delete', methods=['DELETE'])  # 기존 DELETE를 사용했으나 교체
