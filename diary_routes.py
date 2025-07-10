@@ -12,7 +12,8 @@ def register_diary_routes(app):
   @app.route('/diary/main', methods=['GET'])
   @handle_token_validation
   def show_main_page():
-      return render_template('menu-main.html')
+      user_id = get_jwt_identity()
+      return render_template('menu-main.html', user_id=user_id)
   
   # 일기 작성 페이지
   @app.route('/diary/write', methods=['GET'])
