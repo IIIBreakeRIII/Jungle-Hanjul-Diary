@@ -53,6 +53,13 @@ def register_my_diary_routes(app):
 
       for diary in diaries:
         diary['_id'] = str(diary['_id'])
+        if isinstance(diary['created_at'], str):
+          diary['created_at'] = datetime.fromisoformat(diary['created_at'].replace('Z', '+00:00'))
+          kr_time = diary['created_at'].astimezone(timezone(timedelta(hours=9)))
+          diary['created_at'] = kr_time.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+          diary['created_at'] = diary['created_at'].replace(tzinfo=UTC).astimezone(
+            timezone(timedelta(hours=9))).strftime('%Y-%m-%d %H:%M:%S')
 
       return render_template('menu-myDiary.html', my_diaries=diaries)
 
@@ -117,6 +124,8 @@ def register_my_diary_routes(app):
   @app.route('/api/diary/<diary_id>/delete', methods=['DELETE'])  # 기존 DELETE를 사용했으나 교체
   @handle_token_validation
   def delete_diary(diary_id):
-    result = db.diaries.delete_one({'_id': ObjectId(diary_id)})
-
-    return jsonify({"message": "일기가 삭제되었습니다."})
+    try:
+      result = db.diaries.delete_one({'_id': ObjectId(diary_id)})
+      return jsonify({"message": "일기가 삭제되었습니다."})
+    except Exception as e:
+      return jsonify({"message": "일기 삭제 처리 중 오류가 발생했습니다."})
