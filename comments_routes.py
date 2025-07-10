@@ -26,8 +26,6 @@ def register_comments_routes(app):
         "created_at": created_at
       }
 
-      print(comment)
-
       db.comments.insert_one(comment)
 
       return jsonify({
@@ -41,6 +39,7 @@ def register_comments_routes(app):
 
   # 댓글 수정
   @app.route('/diary/<diary_id>/comments/<comment_id>', methods=['PUT'])
+  @handle_token_validation
   def update_diary_comment(diary_id, comment_id):
     data = request.json
     comment_to_update = data.get('comment')
@@ -65,6 +64,7 @@ def register_comments_routes(app):
 
   # 댓글 삭제
   @app.route('/diary/<diary_id>/comments/<comment_id>', methods=['DELETE'])
+  @handle_token_validation
   def delete_diary_comment(diary_id, comment_id):
     result = db.comments.delete_one({'_id': ObjectId(comment_id)})
     return jsonify({
@@ -74,6 +74,7 @@ def register_comments_routes(app):
 
   # [내가 쓴 일기] 의 댓글 수정
   @app.route('/diary/me/<diary_id>/comments/<comment_id>', methods=['PUT'])
+  @handle_token_validation
   def update_my_diary_comment(diary_id, comment_id):
     data = request.json
     comment_to_update = data.get('comment')
@@ -98,6 +99,7 @@ def register_comments_routes(app):
 
   # [내가 쓴 일기] 의 댓글 삭제
   @app.route('/diary/me/<diary_id>/comments/<comment_id>', methods=['DELETE'])
+  @handle_token_validation
   def delete_my_diary_comment(diary_id, comment_id):
     result = db.comments.delete_one({'_id': ObjectId(comment_id)})
     return jsonify({

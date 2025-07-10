@@ -30,9 +30,7 @@ def handle_token_validation(view_func):
 
     except ExpiredSignatureError as e:
       # 액세스 토큰이 만료된 경우 -> 리프레시 토큰으로 액세스 토큰 재발급 시도
-      print("JWT Exception ExpiredSignatureError:", type(e), str(e))
       try:
-        print('@@@ 데코레이터 @@@ 만료된 액세스 토큰 갱신 중...')
         verify_jwt_in_request(refresh=True)
         current_user = get_jwt_identity()
         access_token = create_access_token(identity=current_user)
@@ -42,13 +40,12 @@ def handle_token_validation(view_func):
         return response
 
       except Exception as e:
-        print("JWT Exception after ExpiredSignatureError:", type(e), str(e))
+        print("handle_token_validation ExpiredSignatureError:", type(e), str(e))
         # 리프레시 토큰도 만료된 경우 -> 다시 로그인 요청하기
         return _handle_session_expired()
 
     except NoAuthorizationError:
       # 액세스 토큰이 아예 없는 경우에도 리프레시로 재발급 시도
-      print('데코레이션 NoAuthorizationError: 액세스 토큰이 없어서 리프레시 토큰으로 재발급 시도')
       try:
         verify_jwt_in_request(refresh=True)
         current_user = get_jwt_identity()
@@ -59,13 +56,13 @@ def handle_token_validation(view_func):
         return response
 
       except Exception as e:
-        print("JWT Exception after NoAuthorizationError:", type(e), str(e))
+        print("handle_token_validation NoAuthorizationError:", type(e), str(e))
         # 리프레시 토큰도 없다면 NoAuthorizationError 발생: Missing cookie "refresh_token_cookie"
         return _handle_not_logged_in()
 
     # 그 밖의 에러 메시지
     except Exception as e:
-      print("JWT Exception:", type(e), str(e))
+      print("Exception:", type(e), str(e))
 
   return wrapped
 
