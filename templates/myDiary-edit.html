@@ -68,6 +68,10 @@
                     <p class="diary-reply-text text-[16px] font-[100] text-[rgba(var(--gray))]">
                       {{ comment.comment }}
                     </p>
+                    {# 작성일자 #}
+                    <div class="mt-1">
+                      <p class="reply-created-at text-[12px] font-[100] text-[rgba(var(--gray))]">{{ comment.created_at }}</p>
+                    </div>
                   </div>
                 {% endif %}
               {% endfor %}
